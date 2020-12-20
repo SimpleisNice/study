@@ -79,10 +79,62 @@ const element = {
 
 React 는 위의 이러한 객체를 읽은 후 DOM 을 구성하고 최신으로 유지하는 데 위와 같은 객체를 사용한다.
 
+# 3. 엘리먼트 렌더링
+
+엘리먼트는 React 앱의 가장 작은 단위 이며, 화면에 표시할 내용을 기술한다.
+
+```jsx
+const element = <h1>Hello, world</h1>;
+```
+
+React 엘리먼트는 일반 객체이며 쉽게 생성할 수 있다.
+
+React DOM 은 React 엘리먼트와 일치하도록 DOM 을 업데이트한다.
+
+## DOM 에 엘리먼트 렌더링하기
+HTML 어딘가에 아래와 같으 내용의 div 가 있다고 가정하자
+
+```html
+<div id="root"></div>
+```
+```jsx
+const element = <h1>Hello, world</h1>;
+ReactDOM.render(element, document.getElementById('root'));
+```
+- 위 root 안에 들어가는 모든 엘리먼트를 React DOM 에서 관리하기 때문에 이것을 루트 DOM 노드라고 부른다.
+- React 로 구현된 애플리케이션은 일반적으로 하나의 루트 DOM 노드가 있습니다.
+- React 를 기존 앱에 통합하려는 경우 원하는 만큼 많은 수의 독립된 루트 DOM 노드가 있을 수 있습니다.
+- React 엘리먼트를 루트 DOM 노드에 렌더링하면 둘 다 ReactDOM.render() 로 전달하면 된다.
+
+React 엘리먼트는 불변객체이다.
+
+엘리먼트를 생성한 이후에는 해당 엘리먼트의 자식이나 속성을 변경할 수 없다.
+
+엘리먼트는 영화에서 하나의 프레임과 같이 특정 시점의 UI를 보여준다.
+
+```jsx
+function tick() {
+  const element = (
+    <div>
+      <h1>Hello, world!</h1>
+      <h2>It is {new Date().toLocaleTimeString()}.</h2>
+    </div>
+  );
+
+  ReactDOM.render(element, document.getElementById('root'));
+}
+
+setInterval(tick, 1000);
+```
+- 실제로 대부분의 React 앱은 ReactDOM.render() 를 한 번만 호출한다.
+
+React DOM 은 해당 엘리먼트와 그 자식 엘리먼트를 이전의 엘리먼트와 비교하고 DOM 을 원하는 상태로 만드는데 필요한 경우에만 DOM 을 업데이트한다.
+
 # 추가
 React 에서는 이벤트가 처리되는 방식, 시간에 따라 state 가 변하는 방식, 화면에 표시하기 위해 데이터가 준비되는 방식 등 렌더링 로직이 본질적으로 다른 UI 로직과 연결된다.
 
 React 는 별도의 파일에 마크업과 로직을 넣어 기술을 인위적으로 분리하는 대신, 둘 다 포함하는 컴포넌트라고 부르는 느슨하게 연결된 유닛으로 관심사를 분리한다.
 
+엘리먼트는 컴포넌트의 구성요소이다.
 # 참고
 https://gist.github.com/gaearon/683e676101005de0add59e8bb345340c
