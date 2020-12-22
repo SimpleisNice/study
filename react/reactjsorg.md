@@ -130,11 +130,200 @@ setInterval(tick, 1000);
 
 React DOM 은 해당 엘리먼트와 그 자식 엘리먼트를 이전의 엘리먼트와 비교하고 DOM 을 원하는 상태로 만드는데 필요한 경우에만 DOM 을 업데이트한다.
 
+# 4. Components and Props
+컴포넌트를 통해 UI 를 재사용 가능한 개별적인 여러 조각으로 나누고, 각 조각을 개별적으로 살펴볼 수 있다.
+
+컴포넌트를 정의하는 방법은 2가지가 있다.
+```jsx
+// 함수 컴포넌트
+function Welcome(props) {
+  return <h1>Hello, {props.name} </h1>
+}
+
+// 클래스 컴포넌트
+class Welcome extends React.Component {
+  render() {
+    return <h1>Hello, {this.props.name} </h1>
+  }
+}
+```
+- React 의 관점에서 볼 때 위 두가지 유형의 컴포넌트는 동일하다.
+
+React 엘리먼트는 사용자 정의 컴포넌트로도 나타낼 수 있다.
+```jsx
+function Welcome(props) {
+  return <h1>Hello, {props.name}</h1>
+}
+
+const tempElement = <Welcome name="React" />;
+
+ReactDOM.render(
+  tempElement,
+  document.getElementById('root')
+)
+```
+- React 가 사용자 정의 컴포넌트로 작성한 엘리먼트를 발견하면 JSX 어트리뷰트와 자식을 해당 컴포넌트에 단일 객체로 전달하며, 이 객체를 props 라고 한다.
+
+컴포넌트의 이름은 항상 대문자로 시작
+- 소문자로 시작하는 컴포넌트를 DOM 태그로 처리한다.
+  - ex) `<div />` 는 HTML div 태그를 나타내지만, `<Welcome />` 는 컴포넌트를 나타내며 범위 안에 `Welcome`이 있어야 한다.
+
+
+컴포넌트 합성
+- 컴포넌트는 자신의 출력에 다른 컴포넌트를 참조할 수 있다.
+- 이는 모든 세부 단계에서 동일한 추상 컴포넌트를 사용할 수 있음을 의미한다.
+- React 앱에서는 버튼, 폼, 다이얼로그, 화면 등의 모든 것들이 흔히 컴포넌트로 표현된다.
+
+```jsx
+function Welcome(props) {
+  return <h1>Hello {props.name}</h1>
+}
+
+function App() {
+  return (
+    <div>
+      <Welcome name="Sara" />
+      <Welcome name="Test" />
+      <Welcome name="Cora" />
+    </div>
+  );
+}
+
+ReactDOM.render(
+  <App />,
+  document.getElementById('root')
+);
+```
+
+컴포넌트 추출
+- 컴포넌트를 여러 개의 작은 컴포넌트로 나누는 것을 두려워 마라
+
+```jsx
+function formatDate(date) {
+  return date.toLocaleDateString();
+}
+
+function Comment(props) {
+  return (
+    <div className="Comment">
+      <div className="UserInfo">
+        <img
+          className="Avatar"
+          src={props.author.avatarUrl}
+          alt={props.author.name}
+        />
+        <div className="Comment-text">
+          {props.text}
+        </div>
+        <div className="Comment-date">
+          {formatDate(props.date)}
+        </div>
+      </div>
+    </div>
+  )
+}
+
+const comment = {
+  date: new Date(),
+  text: 'I hope you enjoy learning React!!!',
+  author: {
+    name: 'Hello Kitty',
+    avatarUrl: 'https://placekitten.com/g/64/64',
+  },
+};
+
+ReactDOM.render(
+  <Comment
+    date={comment.date}
+    text={comment.text}
+    author={comment.author}
+  />,
+  document.getElementById('root')
+)
+```
+- 해당 컴포넌트는 author, text, date 를 props 로 받은 후 웹 사이트의 코멘트를 나타낸다.
+- 이 컴포넌트는 구성요소들이 모두 중첩 구조로 이루어져 있어서 변경하기 어려울 수 있으며, 각 구성 요소를 개별적으로 재사용하기 어렵다.
+
+```jsx
+function formatDate(date) {
+  return date.toLocaleDateString();
+}
+
+// Avatar
+function Avatar(props) {
+  return (
+    <img className="Avatar"
+      src={props.user.avatarUrl}
+      alt={props.user.name}
+    />
+  );
+}
+
+// UserInfo
+function UserInfo(props) {
+  return (
+    <div className="UserInfo">
+      <Avatar user={props.user} />
+      <div className="UserInfo-name">
+        {props.user.name}
+      </div>
+    </div>
+  );
+}
+
+// Comment
+function Comment(props) {
+  return (
+    <div className="Comment">
+      <UserInfo user={props.author} />
+      <div className="Comment-text">
+        {props.text}
+      </div>
+      <div className="Comment-date">
+        {formatDate(props.date)}
+      </div>
+    </div>
+  );
+}
+const comment = {
+  date: new Date(),
+  text: 'I hope you enjoy learning React!!!',
+  author: {
+    name: 'Hello Kitty',
+    avatarUrl: 'https://placekitten.com/g/64/64',
+  },
+};
+
+ReactDOM.render(
+  <Comment
+    date={comment.date}
+    text={comment.text}
+    author={comment.author}
+  />,
+  document.getElementById('root')
+)
+```
+- 바로 위 내용에서, 큰 컴포넌트를 작은 컴포넌트로 분리한 코드이다.
+- 재사용 가능한 컴포넌트를 만들어 놓는 것은 더 큰 앱에서 작업할 때 두각을 나타낸다.
+- UI 일부가 여러 번 사용되거나(Button, Panel, Avatar), UI 일부가 자체적으로 복잡한(App, FeedStory, Comment) 경우에는 별도의 컴포넌트로 만드는게 좋다
+
+
+props 는 읽기 전용이다.
+- 함수 컴포넌트나 클래스 컴포넌트 모두 컴포넌트의 자체 props 를 정해서는 안된다.
+
+React 는 매우 유연하지만 한 가지 엄격한 규칙이 있다.
+- 모든 React 컴포넌트는 자신의 props 를 다룰 때 반드시 순수 함수처럼 동작해야 한다.
+  - 순수 함수란 입력값을 바꾸려 하지 않고 항상 동일한 입력값에 대해 동일한 결과를 반환
+
 # 추가
 React 에서는 이벤트가 처리되는 방식, 시간에 따라 state 가 변하는 방식, 화면에 표시하기 위해 데이터가 준비되는 방식 등 렌더링 로직이 본질적으로 다른 UI 로직과 연결된다.
 
 React 는 별도의 파일에 마크업과 로직을 넣어 기술을 인위적으로 분리하는 대신, 둘 다 포함하는 컴포넌트라고 부르는 느슨하게 연결된 유닛으로 관심사를 분리한다.
 
 엘리먼트는 컴포넌트의 구성요소이다.
+
+개념적으로 컴포넌트는 JavaScript 함수와 유사하다. props 라고 하는 임의의 입력을 받은 후, 화면에 어떻게 표시되는지를 기술하는 React  엘리먼틀 반환
+
+컴포넌트의 이름은 항상 대문자로 시작한다.
 # 참고
 https://gist.github.com/gaearon/683e676101005de0add59e8bb345340c
