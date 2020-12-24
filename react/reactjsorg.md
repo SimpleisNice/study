@@ -315,6 +315,233 @@ React 는 매우 유연하지만 한 가지 엄격한 규칙이 있다.
 - 모든 React 컴포넌트는 자신의 props 를 다룰 때 반드시 순수 함수처럼 동작해야 한다.
   - 순수 함수란 입력값을 바꾸려 하지 않고 항상 동일한 입력값에 대해 동일한 결과를 반환
 
+# State and Lifecycle
+이 섹션에서는 아래의 컴포넌트를 재사용하고 캡슐화 하는 방법에 대해 배울 것이다.
+
+```jsx
+// 시계
+function tick() {
+  const element = (
+    <div>
+      <h1>Hello, world!!</h1>
+      <h2>It is {new Date().toLocaleTimeString()}</h2>
+    </div>
+  );
+
+  ReactDOM.render(
+    element,
+    document.getElementById('root')
+  );
+}
+
+setInterval(tick, 1000);
+```
+
+일단 시계가 생긴 것에 따라 캡슐화
+```jsx
+function Clock(props) {
+  return (
+    <div>
+      <h1>Hello, React</h1>
+      <h2>It is {props.date.toLocaleTimeString()}</h2>
+    </div>
+  );
+}
+
+function tick() {
+  ReactDOM.render(
+    <Clock date={new Date()} />,  // 이상적인 코드는 <Clock />
+    document.getElementById('root')
+  );
+}
+
+setInterval(tick, 1000);
+```
+- 여기서 중요한 요건이 누락되어 있다.
+- Clock 컴포넌트가 타이머를 설정하고 매초 UI 를 업데이트 하는 것이 Clock 컴포넌트의 구현 세부사항이 되어야 한다.
+- 이상적으로 한 번만 코드를 작성하고 Clock 이 스스로 업데이트 하도록 만들어야 한다.
+- 이를 구현하기 위해서는 state 를 추가해야 한다.
+
+
+State 는 props 와 유사하지만, 비공개이며 컴포넌트에 의해 완전히 제어된다.
+
+
+함수에서 클래스로 변환하기
+- 다섯 단계로 Clock 과 같은 함수 컴포넌트를 클래스로 변환할 수 있다.
+1. React.Component 를 확장하는 동일한 이름의 class 생성
+2. render() 라고 불리는 빈 메서드를 추가
+3. 함수의 내용을 render() 메서드 안으로 옮김
+4. render() 내용 안에 있는 props 를 this.props 로 변경
+5. 남아있는 빈 함수 선언 삭제
+    ```jsx
+    class Clock extends React.Component {
+      render() {
+        return (
+          <div>
+            <h1>Hello, world!</h1>
+            <h2>It is {this.props.date.toLocaleTimeString()}</h2>
+          </div>
+        )
+      }
+    }
+    ```
+    - render 메서드는 같은 DOM 노드로 `<Clock />` 을 렌더링하는 경우 Clock 단일 인스턴스만 사용된다.
+    - 이것은 로컬 state 와 생명 주기 메서드와 같은 부가적인 기능을 사용할 수 있게 해준다.
+
+클래스에 로컬 state 추가하기
+- 위의 코드에서 date 를 props 에서 state로 이동을 해볼것이다.
+- 가장 먼저 render() 메서드 내 this.props.data 를 this.state.date 로 변경
+- 다음 this.state 를 지정하는 class constructor 를 추가 한다.
+- 마지막으로 `<Clock />` 요소에서 date prop 을 삭제한다.
+
+```jsx
+class Clock extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { date: new Date()};
+  }
+  render() {
+    return (
+      <div>
+        <h1>Hello, React</h1>
+        <h2>It is {this.state.date.toLocaleTimeString()}</h2>
+      </div>
+    );
+  }
+}
+
+ReactDOM.render(
+  <Clock />,
+  document.getElementById('root')
+);
+```
+클래스 컴포넌트는 항상 props 로 기본 constructor 를 호출해야 한다.
+
+생명주기 메서드를 클래스에 추가하기
+- 많은 컴포넌트가 있는 애플리케이션에서 컴포넌트가 삭제될 때 해당 컴포넌트가 사용 중이던 리소스를 확보하는 것이 중요
+- 마운트, 언마운트
+- 컴포넌트 클래스에서 특별한 메서드를 선언하여 컴포넌트가 마운트 되거나 언마운트 될 때 일부 코드를 작동할 수 있다.
+  - 이러한 메서드들은 생명주기 메서드라고 불린다.
+```jsx
+class Clock extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      date: new Date(),
+    }
+  }
+  
+  componentDidMount() {
+    this.timerID = setInterval(() => this.tick(), 1000);
+  }
+  componentWillUnmount() {
+    clearInterval(this.timerID);
+  }
+  tick() {
+    this.setState({
+      date: new Date(),
+    })
+  }
+  render() {
+    return (
+      <div>
+        <h1>Hello, React</h1>
+        <h2>It is {this.state.date.toLocaleTimeString()}</h2>
+      </div>
+    )
+  }
+}
+
+ReactDOM.render(
+  <Clock />,
+  document.getElementById('root'),
+)
+```
+- componentDidMount() 메서드는 컴포넌트 출력물이 DOM 에 렌더링 된 후 실행
+- componentWillUnMount()
+- 컴포넌트 로컬 state 를 업데이트하기 위해 this.setState() 를 사용한다.
+
+State 를 올바르게 사용하기
+- setState() 에 대해 알아야할 세가지가 있다.
+
+1. 직접 State 를 수정하지마라
+```jsx
+// wrong
+this.state.comment = 'Hello';
+
+// Correct
+this.setState({comment: 'Hello'});
+```
+- this.state 를 지정할 수 있는 유일한 공간은 바로 constructor 이다.
+
+2. State 업데이트는 비동기적일 수도 있다.
+```jsx
+// wrong
+// 아래의 코드는 카운터 업데이트에 실패할 수 있다.
+this.setState({
+  counter: this.state.counter + this.props.increment,
+})
+
+// Correct
+this.setState((state, props) => ({
+  counter: state.counter + props.increment
+}));
+// Correct
+this.setState(function(state, props) {
+  return {
+    counter: state.counter + props.increment
+  };
+})
+```
+- React 는 성능을 위해 여러 setState() 호출을 단일 업데이트로 한꺼번에 처리할 수 있다.
+- this.props 와 this.state 가 비동기적으로 업데이트될 수 있기 때문에 다음 state를 계산할 때 해당 값에 의존해서는 안된다.
+- 이를 수정하기 위해 객체보다는 함수를 인자로 사용하는 다른 형태의 setState() 를 사용한다.
+
+State 업데이트는 병합된다.
+- setState() 를 호출할 때 React 는 제공한 객체를 현재 state 로 병합한다.
+
+```jsx
+// 예를 들어 state 는 다양한 독립적인 변수를 포함할 수 있다.
+constructor(props) {
+  super(props);
+  this.state = {
+    posts: [],
+    comments: []
+  };
+}
+
+// 별도의 setState() 호출로 이러한 변수를 독립적으로 업데이트할 수 있다.
+// 병합은 얕게 이루어지기 때문에 this.setState({comments}) 는 this.state.posts 에 영향을 주진 않지만 this.state.comments 는 완전히 대체된다.
+componentDidMount() {
+  fetchPosts.then(response => {
+    this.setState({posts: response.posts})
+  });
+  fetchComments().then(response => {
+    this.setState({
+      comments: response.comments
+    });
+  });
+}
+```
+
+데이터는 아래로 흐름
+- 부모 컴포넌트나 자식 컴포넌트 모두 특정 컴포넌트가 유상태인지 또는 무상태인지 알 수 없고, 그들이 함수나 클래스로 정의되어 있는지에 대해서 관심을 가질 필요가 없다.
+- 이 때문에 state 는 종종 로컬 또는 캡슐화라고 불린다.
+- state 가 소유하고 설정한 컴포넌트 이외에는 어떠한 컴포넌트에도 접근할 수 없다.
+- 컴포넌트는 자신의 state 를 자식 컴포넌트에 props 로 전달할 수 있다.
+
+```jsx
+// FormattedDate 컴포넌트는 date 를 자신의 props 로 받을 것이고
+// 이것이 state 또는 props 에서 왔는지, 수동으로 입력한 것인지 알지 못함
+<FormattedDate date={this.state.date}>
+```
+- 일반적으로 이를 하향식(top-down) 또는 단방향식 데이터 흐름이라고 한다.
+- 모든 state 는 항상 특정한 컴포넌트가 소유하고 있으며 그 state 로부터 파생된 UI 또는 데이터는 오직 트리구조에서 자신 아래에 있는 컴포넌트에만 영향을 미침
+
+React 앱에서 컴포넌트가 유상태 또는 무상태에 대한 것은 시간이 지남에 따라 변결될 수 있는 구현 세부 사항으로 간주한다.
+유상태 컴포넌트 안에서 무상태 컴포넌트를 사용할 수 있으며, 그 반대 경우도 마찬가지로 사용할 수 있다.
+
+
 # 추가
 React 에서는 이벤트가 처리되는 방식, 시간에 따라 state 가 변하는 방식, 화면에 표시하기 위해 데이터가 준비되는 방식 등 렌더링 로직이 본질적으로 다른 UI 로직과 연결된다.
 
