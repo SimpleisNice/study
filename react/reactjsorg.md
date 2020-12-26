@@ -542,6 +542,102 @@ React 앱에서 컴포넌트가 유상태 또는 무상태에 대한 것은 시�
 유상태 컴포넌트 안에서 무상태 컴포넌트를 사용할 수 있으며, 그 반대 경우도 마찬가지로 사용할 수 있다.
 
 
+# 이벤트 처리하기
+React 엘리먼트에서 이벤트를 처리하는 방식은 DOM 엘리먼트에서 이벤트를 처리하는 방식과 매우 유사하다. 하지만 몇 가지 문법차이는 아래와 같다.
+- React의 이벤트는 소문자 대신 캐멀 케이스(camelCase)를 사용한다.
+- JSX 를 사용하여 문자열이 아닌 함수로 이벤트 핸들러를 전달
+
+```jsx
+// HTML
+<button onclick="activateLaser()"></button>
+
+// React
+<button onClick={activateLaser}></button>
+```
+- React 에서 false 를 반환해도 기본 동작을 방지할 수 없다.
+- 반드시 preventDefault 를 명식적으로 호출해야 한다.
+
+React 는 W3C 명세에 따라 합성 이벤트를 정의하기 때문에 브라우저 호환성에 대해 걱정할 필요가 없다.
+
+React 이벤트는 브라우저 고유 이벤트와 정확히 동일하게 동작하지 않는다.
+
+React 를 사용할 때 DOM 엘리먼트가 생성된 후 리스너를 추가하기 위해 addEventListener 를 호출할 필요가 없다. 대신 엘리먼트가 처음 렌더링될 때 리스너를 제공하면 된다.
+
+```jsx
+class Toggle extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      isToggleOn: true,
+    };
+
+    this.handleClick = this.handleClick.bind(this);
+  }
+
+  handleClick() {
+    this.setState(state => ({
+      isToggleOn: !state.isToggleOn
+    }));
+  }
+
+  render() {
+    return (
+      <button onClick={this.handleClick}>
+        {this.state.isToggleOn ? 'ON' : 'OFF'}
+      </button>
+    )
+  }
+}
+
+ReactDOM.render(
+  <Toggle />,
+  document.getElementById('root')
+)
+```
+- this 의 의미에 대해 주의해야함
+- javascript 에서 클래스 메서드는 기본적으로 바인딩되어 있지 않다.
+- 일반적으로 onClick={this.handleClick} 과 같이 뒤에 () 를 사용하지 않고 메서드를 참조하는 경우, 해당 메서드를 바인딩 해야함
+
+
+바인딩을 해결하기 위해
+```jsx
+class LogginButton extends React.Component {
+  // 이 문법의 this 가 handleClick 내에서 바인딩 되도록 한다.
+  // 주의: 이 문법은 실험적인 문법
+  handleClick = () => {
+    console.log('this is: ', this);
+  }
+
+  render() {
+    return (
+      <button onClick={this.handleClick}></button>
+    )
+  }
+}
+
+// 또는
+class LoggingButton extends React.Component {
+  handleClick() {
+    console.log('this. is: ', this);
+  }
+  
+  render() {
+    return (
+      <button onClick={()=> this.handleClick()}>
+        Click me
+      </button>
+    )
+  }
+}
+```
+
+이벤트 핸들러에 인자 전달하기
+- 루프 내부에서는 이벤트 핸들러에 추가적인 매개변수를 전달하는 것이 일반적
+```jsx
+<button onClick={(e) => this.deleteRow(id, e)}>Delete Row</button>
+<button onClick={this.deleteRow.bind(this, id)}>Delete Row</button>
+```
+
 # 추가
 React 에서는 이벤트가 처리되는 방식, 시간에 따라 state 가 변하는 방식, 화면에 표시하기 위해 데이터가 준비되는 방식 등 렌더링 로직이 본질적으로 다른 UI 로직과 연결된다.
 
