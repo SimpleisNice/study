@@ -315,7 +315,7 @@ React 는 매우 유연하지만 한 가지 엄격한 규칙이 있다.
 - 모든 React 컴포넌트는 자신의 props 를 다룰 때 반드시 순수 함수처럼 동작해야 한다.
   - 순수 함수란 입력값을 바꾸려 하지 않고 항상 동일한 입력값에 대해 동일한 결과를 반환
 
-# State and Lifecycle
+# 5. State and Lifecycle
 이 섹션에서는 아래의 컴포넌트를 재사용하고 캡슐화 하는 방법에 대해 배울 것이다.
 
 ```jsx
@@ -542,7 +542,7 @@ React 앱에서 컴포넌트가 유상태 또는 무상태에 대한 것은 시�
 유상태 컴포넌트 안에서 무상태 컴포넌트를 사용할 수 있으며, 그 반대 경우도 마찬가지로 사용할 수 있다.
 
 
-# 이벤트 처리하기
+# 6. 이벤트 처리하기
 React 엘리먼트에서 이벤트를 처리하는 방식은 DOM 엘리먼트에서 이벤트를 처리하는 방식과 매우 유사하다. 하지만 몇 가지 문법차이는 아래와 같다.
 - React의 이벤트는 소문자 대신 캐멀 케이스(camelCase)를 사용한다.
 - JSX 를 사용하여 문자열이 아닌 함수로 이벤트 핸들러를 전달
@@ -636,6 +636,239 @@ class LoggingButton extends React.Component {
 ```jsx
 <button onClick={(e) => this.deleteRow(id, e)}>Delete Row</button>
 <button onClick={this.deleteRow.bind(this, id)}>Delete Row</button>
+```
+
+
+# 7. 조건부 렌더링
+React 에서는 원하는 동작을 캡슐화하는 컴포넌트를 만들 수 있다.
+
+이렇게 하면 애플리케이션의 상태에 따라서 컴포넌트 중 몇개만을 렌더링할 수 있다.
+
+React 에서 조건부 렌더링은 JavaScript 에서의 조건 처리와 같이 동작한다.
+- if 나 조건부 연산자와 같은 JavaScript 연산자를 현재 상태를 나타내는 엘리먼트를 만드는데 사용
+- 그러면 React 는 현재 상태에 맞게 UI 를 업데이트할 것이다.
+
+```jsx
+function UserGreeting (props) {
+  return <h1>Welcome back!</h1>;
+}
+
+function GuestGreeting (props) {
+  return <h1>Please sign up</h1>;
+}
+
+function Greeting (props) {
+  const isLoggedIn = props.isLoggedIn;
+
+  if (isLoggedIn) {
+    return <UserGreeting />;
+  }
+  
+  return <GuestGreeting />;
+}
+
+ReactDOM.render(
+  <Greeting isLoggedIn={false} />,
+  document.getElementById('root')
+);
+```
+
+엘리먼트 변수
+- 엘리먼트를 저장하기 위해 변수를 사용할 수 있다.
+- 출력의 다른 부분은 변하지 않은 채로 컴포넌트의 일부를 조건부로 렌더링 할 수 있다.
+
+```jsx
+class LoginControl extends React.Component {
+  constructor(props) {
+    super(props);
+    this.handleLoginClick = this.handleLoginClick.bind(this);
+    this.handleLogoutClick = this.handleLogoutClick.bind(this);
+    this.state = {isLoggedIn: false};
+  }
+
+  handleLoginClick() {
+    this.setState({isLoggedIn: true});
+  }
+
+  handleLogoutClick() {
+    this.setState({isLoggedIn: false});
+  }
+
+  render() {
+    const isLoggedIn = this.state.isLoggedIn;
+    let button;
+
+    if (isLoggedIn) {
+      button = <LogoutButton onClick={this.handleLogoutClick} />;
+    } else {
+      button = <LoginButton onClick={this.handleLoginClick} />;
+    }
+
+    return (
+      <div>
+        <Greeting isLoggedIn={isLoggedIn} />
+        {button}
+      </div>
+    );
+  }
+}
+
+function UserGreeting(props) {
+  return <h1>Welcome back!</h1>;
+}
+
+function GuestGreeting(props) {
+  return <h1>Please sign up.</h1>;
+}
+
+function Greeting(props) {
+  const isLoggedIn = props.isLoggedIn;
+  if (isLoggedIn) {
+    return <UserGreeting />;
+  }
+  return <GuestGreeting />;
+}
+
+function LoginButton(props) {
+  return (
+    <button onClick={props.onClick}>
+      Login
+    </button>
+  );
+}
+
+function LogoutButton(props) {
+  return (
+    <button onClick={props.onClick}>
+      Logout
+    </button>
+  );
+}
+
+ReactDOM.render(
+  <LoginControl />,
+  document.getElementById('root')
+);
+```
+
+논리 && 연산자로 IF 를 인라인으로 표현하기
+- JSX 안에는 중괄호를 이용해서 표현식을 포함할 수 있다.
+- && 논리 연산자를 사용하면 쉽게 엘리먼트를 조건부로 넣을 수 있다.
+```jsx
+function Mailbox (props) {
+  const unreadMessages = props.unreadMessages;
+
+  return (
+    <div>
+      <h1>Hello!!</h1>
+      {unreadMessages.length > 0 &&
+        <h2>
+          You have {unreadMessages.length} unread messages.
+        </h2>
+      }
+    </div>
+  );
+}
+
+const messages = ['1', '2', '3', '4',];
+
+ReactDOM.render(
+  <Mailbox unreadMessages={messages} />,
+  document.getElementById('root')
+);
+```
+- JavaScript 에서 `true && expression` 은 항상 expression 으로 평가되고 `false && expression` 은 항상 false 로 평가된다.
+- 따라서 && 뒤의 엘리먼트 조건이 true 일때 출력되며, false 라면 React 는 무시한다.
+```jsx
+class Temp extends React.Component {
+  constructor(props) {
+    super(props);
+  }
+  
+  render() {
+    const count = 0;
+    return (
+      <div>
+        <h1>Test</h1>
+        {count && <h1>{count}</h1>}
+      </div>
+    )
+  }
+}
+
+ReactDOM.render(
+  <Temp />,
+  document.getElementById('root')
+)
+```
+- false 로 평가될 수 있는 표현식을 반환하면 && 뒤에 있는 표현식은 건너뛰지만 false 로 평가 될 수 있는 표현식이 반환된다.
+
+조건부 연산자로 If-Else
+```jsx
+render() {
+  const isLoggedIn = this.state.isLoggedIn;
+
+  return(
+    <div>
+    {
+      isLoggedIn
+      ? <LogoutButton onClick={this.handleLogoutClick}>
+      : <LogoutButton onClick={this.handleLoginClick}>
+    }
+    </div>
+  )
+}
+```
+- 엘리먼트를 조건부로 렌더링하는 다른 방법은 조건부 연산자인 `condition ? true : false` 를 사용하는 것이다.
+
+컴포넌트가 렌더링하는 것을 막기
+- 가끔 다른 컴포넌트에 의해 렌더링될 때 컴포넌트 자체를 숨기고 싶을 대가 있을 수 있다.
+- 이때는 렌더링 결과를 출력하는 대신 null 반환하면 해결 할 수 있다.
+
+```jsx
+function WarningBanner (props) {
+  if (!props.warn) {
+    return null;
+  }
+
+  return (
+    <div className='warning'>
+      Warning
+    </div>
+  )
+}
+
+class Page extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      showWarning: true,
+    }
+    this.handleToggleClick = this.handleToggleClick.bind(this);
+  }
+
+  handleToggleClick() {
+    this.setState(state => ({
+      showWarning: !state.showWarning
+    }));
+  }
+
+  render() {
+    return (
+      <div>
+        <WarningBanner warn={this.state.showWarning} />
+        <buttton onClick={this.handleToggleClick}>
+          {this.state.showWarning ? 'Hide' : 'Show'}
+        </buttton>
+      </div>
+    );
+  }
+}
+
+ReactDOM.render(
+  <Page />,
+  document.getElementById('root')
+);
 ```
 
 # 추가
