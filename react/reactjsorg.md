@@ -871,7 +871,7 @@ ReactDOM.render(
 );
 ```
 
-# 리스트와 Key
+# 8. 리스트와 Key
 React 에서 배열을 엘리먼트 리스트로 만드는 방식은 아래와 동일합니다.
 ```jsx
 const numbers = [1, 2, 3, 4, 5];
@@ -1030,6 +1030,253 @@ ReactDOM.render(
 );
 ```
 
+# 9. 폼
+
+HTML 폼 엘리먼트는 폼 엘리먼트 자체가 내부 상태를 가지기 때문에, React 의 다른 DOM 엘리먼트와 조금 다르게 동작한다.
+
+```html
+<form>
+  <label>
+    Name:
+    <input type="text" name="name" />
+  </label>
+  <input type="input" value="submit">
+</form>
+```
+- 위 폼은 사용자가 폼을 제출하면 새로운 페이지로 이동하는 기본 HTML 폼 동작을 수행한다.
+- React 에서 동일한 동작을 원한다면 위 그대로 사용하면 된다.
+- 그러나 대부분의 경우 JavaScript 함수로 폼의 제출을 처리하고 사용자가 폼에 입력한 데이터에 접근하도록 하는 것이 편리하다. 이를 위해 표준 방식은 제어 컴어컴포넌트 라고 불리는 기술을 이용한다.
+
+제어 컴포넌트 (Controlled Component)
+- HTML 에서 `input`, `textarea`, `select` 와 같은 폼 엘리먼트는 일반적으로 사용자의 입력을 기반으로 자신의 state 를 관리하고 업데이트 한다.
+- React 에서는 변경할 수 있는 state 가 일반적으로 컴포넌트의 state 속성에 유지되며 `setState()` 에 의해 업데이트 된다.
+- 우리는 React state 를 신뢰 가능한 단일 출처(single source of truth) 로 만들어 두 요소를 결합할 수 있다.
+- 그러면 폼을 렌더링 하는 React 컴포넌트는 폼에 발생하는 사용자 입력 값이 제어한다.
+- 이러한 방식으로 React 에 의해 값이 제어되는 입력 폼 엘리먼트를 제어 컴포넌트라고 한다.
+
+```jsx
+class NameForm extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {value: ''};
+
+    this.handleChange = this.handleChange.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
+  }
+
+  handleChange(event) {
+    this.setState({value: event.target.value});
+  }
+
+  handleSubmit(event) {
+    alert('A name was submitted: ' + this.state.value);
+    event.preventDefault();
+  }
+
+  render() {
+    return (
+      <form onSubmit={this.handleSubmit}>
+        <label>
+          Name:
+          <input type="text" value={this.state.value} onChange={this.handleChange} />
+        </label>
+        <input type="submit" value="Submit" />
+      </form>
+    );
+  }
+}
+
+ReactDOM.render(
+  <NameForm />,
+  document.getElementById('root')
+);
+```
+- value 어트리뷰트는 폼 엘리먼트에 설정되므로 표시되는 값은 항상 this.state.value 가 되고, React.state 는 신뢰 가능한 단일 출처가 된다.
+- React state 를 업데이트하기 위해 모든 키 입력에서 handleChange 가 동작하기 때문에 사용자가 입력할 때 보여지는 값이 업데이트된다.
+- 제어 컴포넌트를 사용하면 input 의 값은 항상 React state 에 의해 결정된다.
+- 코드를 조금 더 작성해야 한다는 의미이지만, 다른 UI 엘리먼트에 input 의 값을 전달하거나 다른 이벤트 핸들러에서 값을 재설정 할 수 있다.
+
+textarea 태그
+```html
+<textarea>
+  Hello there, this is some text in a text area
+</textarea>
+```
+- HTML 에서 `<textarea>` 엘리먼트는 텍스트를 자식으로 정의
+- React 에서 `<textarea>` 는 value 어트리뷰트를 대신 사용한다.
+
+```jsx
+class EssayForm extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      value: 'Please write an essay about your favorite DOM element.'
+    };
+
+    this.handleChange = this.handleChange.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
+  }
+
+  handleChange(event) {
+    this.setState({value: event.target.value});
+  }
+
+  handleSubmit(event) {
+    alert('An essay was submitted: ' + this.state.value);
+    event.preventDefault();
+  }
+
+  render() {
+    return (
+      <form onSubmit={this.handleSubmit}>
+        <label>
+          Essay:
+          <textarea value={this.state.value} onChange={this.handleChange} />
+        </label>
+        <input type="submit" value="Submit" />
+      </form>
+    );
+  }
+}
+```
+- this.state.value 를 생성자에서 초기화하므로 textarea 는 일부 텍스트를 가진채 시작된다는 점을 주의해야 한다.
+
+select 태그
+```html
+<select>
+  <option value="grapefruit">Grapefruit</option>
+  <option value="lime">Lime</option>
+  <option selected value="coconut">Coconut</option>
+</select>
+```
+- HTML 에서 `<select>` 는 드롭 다운 목록을 만든다.
+- React 에서는 selected 어트리뷰튜를 사용하는 대신 최상단 select 태그에 value 어트리뷰트를 사용
+- 한 곳에서 업데이트만 하면되기 때문에 제어 컴포넌트에서 사용하기 더 편함 
+
+```jsx
+class FlavorForm extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {value: 'coconut'};
+
+    this.handleChange = this.handleChange.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
+  }
+
+  handleChange(event) {
+    this.setState({value: event.target.value});
+  }
+  handleSubmit(event) {
+    alert('You favorite flavor is: ' + this.state.value);
+    event.preventDefault();
+  }
+
+  render() {
+    return (
+      <form onSubmit={this.handleSubmit}>
+        <label>
+          Pick your favorite flavor:
+          <select value={this.state.value} onChange={this.handleChange}>
+            <option value='grapefruit'>grapefruit</option>
+            <option value='lime'>Lime</option>
+            <option value='coconut'>Coconut</option>
+          </select>
+        </label>
+        <input type="submit" value="submit"/>
+      </form>
+    )
+  }
+}
+
+ReactDOM.render(
+  <FlavorForm />,
+  document.getElementById('root')
+);
+```
+
+file input 태그
+```html
+<input type='file' />
+```
+- HTML 에서는 사용자가 하나 이상의 파일을 자신의 장치 저장소에서 서버로 업로드 하거나 File API 를 통해 JavaScript 로 조작할 수 있다.
+- 값이 읽기 전용이기 때문에 React 에서는 비제어 컴포넌이다.
+
+다중 입력 제어하기
+- 여러 input 엘리먼트를 제어해야할 대, 각 엘리먼트에 name 어트리뷰트를 추가하고 event.target.name 값을 통해 핸들러가 어떤 작업을 할지 선택할 수 있게 해준다.
+
+```jsx
+class Reservation extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      isGoing: true,
+      numberOfGuests: 2,
+    };
+
+    this.handleInputChange = this.handleInputChange.bind(this);
+  }
+
+  handleInputChange(event) {
+    const target = event.target;
+    const value = target.type === 'checkbox' ? target.checked : target.value;
+    const name = target.name;
+
+    this.setState({
+      [name]: value
+    });
+  }
+
+  render() {
+    return (
+      <form>
+        <label>
+          Is going:
+          <input
+            name='isGoing'
+            type='checkbox'
+            checked={this.state.isGoing}
+            onChange={this.handleInputChange}
+          />
+        </label>
+        <br/>
+        <label>
+          Number of guests:
+          <input
+            name="numberOfGuests"
+            type="number"
+            value={this.state.numberOfGuests}
+            onChange={this.handleInputChange} 
+          />
+        </label>
+      </form>
+    )
+  }
+}
+
+ReactDOM.render(
+  <Reservation />,
+  document.getElementById('root')
+);
+```
+
+제어되는 Input Null 값
+- 제어 컴포넌트에 value prop 을 지정하면 의도하지 않는 한 사용자가 변경할 수 없다.
+- value 를 설정했는데 여전히 수정할 수 있다면 실수로 value 를 undefined 나 null 로 설정했을 수 있다.
+```jsx
+ReactDOM.render(<input value='h1' />, mountNode);
+
+setTimeout(function() {
+  ReactDOM.render(<input value={null}>, mountNode);
+}, 1000);
+```
+
+제어 컴포넌트 대안
+- 데이터를 변경할 수 있는 모든 방법에 대해 이벤트 핸들러를 작성하고 React 컴포넌트를 통해 모든 입력 상태를 연결해야 하기 떄문에 때로는 제어 컴포넌트를 사용하는 게 지루 할 수 있다.
+- 특히 기존의 코드베이스를 React 로 변경하고자 할 때나 React 가 아닌 라이브러리와 React 애플리케이션을 통합하고자 할 때 자증날 수 있다. 이러한 경우에 입력 폼을 구현하기 위한 대체 기술인 비제어 컴포넌트를 확인할 수 있다.
+
+완전한 해결책
+- 유효성 검사, 방문한 필드 추적 및 폼 제출 처리와 같은 완벽한 해결을 원한다면 Formik 이 대중적인 선택 중 하나이다.
+- 그러나 Formik 은 제어 컴포넌트 및 state 관리에 기초하기 때문에 배우는 걸 쉽게 생각하면 안된다.
 # 추가
 React 에서는 이벤트가 처리되는 방식, 시간에 따라 state 가 변하는 방식, 화면에 표시하기 위해 데이터가 준비되는 방식 등 렌더링 로직이 본질적으로 다른 UI 로직과 연결된다.
 
