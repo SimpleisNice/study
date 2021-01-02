@@ -1277,6 +1277,221 @@ setTimeout(function() {
 완전한 해결책
 - 유효성 검사, 방문한 필드 추적 및 폼 제출 처리와 같은 완벽한 해결을 원한다면 Formik 이 대중적인 선택 중 하나이다.
 - 그러나 Formik 은 제어 컴포넌트 및 state 관리에 기초하기 때문에 배우는 걸 쉽게 생각하면 안된다.
+
+# 10. State 끌어올리기
+종종 동일한 데이터에 대한 변경 사항을 여러 컴포넌트에 반영해야 할 필요가 있다.
+
+이럴 때는 가장 가까운 공통 조상으로 state 를 끌어올리는 것이 좋다.
+
+## 이번 섹션에서 주어진 온도에서 물의 끓는 여부를 추정하는 온도 계산기를 만들것
+
+1. BoilingVerdict 라는 이름의 컴포넌트 생성
+    - 해당 컴포넌트는 섭씨온도를 의미하는 celsius prop 를 받아서 이 온도가 물이 끓기에 충분하지 여부를 출력
+
+2. Calculator 라는 이름의 컴포넌트 생성
+    - 해당 컴포넌트는 온도를 입력할 수 있는 `<input>` 을 렌더링하고 그 값을 this.state.temperature 에 저장
+    - 또한 현재 입력값에 대한 BoilingVerdict 컴포넌트를 렌더링한다.
+```jsx
+function BoilingVerdict(props) {
+  if (props.celsius >= 100) {
+    return <p>The water would boild.</p>;
+  }
+
+  return <p>The water would not boild</p>
+}
+
+class Calculator extends React.Component {
+  constructor(props) {
+    super(props);
+    
+    this.handleChange = this.handleChange.bind(this);
+    this.state = {temperature: ''};
+  }
+
+  handleChange(e) {
+    this.setState({temperature: e.target.value});
+  }
+  
+  render() {
+    const temperature = this.state.temperature;
+
+    return (
+      <fieldset>
+        <legend>Enter temperature in Celsius:</legend>
+        <input
+          value={temperature}
+          onChange={this.handleChange}
+        />
+        <BoilingVerdict celsius={parseFloat(temperature)}/>
+      </fieldset>
+    );
+  }
+}
+```
+
+
+3. 2 번에서 작업한 Calculator 에서 TemperatureInput 컴포넌틀 빼내는 작업 및 c, f 의 값을 가질 수 있는 scale prop 추가
+```jsx
+const scaleNames = {
+  c: 'Celsius',
+  f: 'Fahrenheit',
+}
+
+function BoilingVerdict(props) {
+  if (props.celsius >= 100) {
+    return <p>The water would boild.</p>;
+  }
+
+  return <p>The water would not boild</p>
+}
+
+class TemperatureInput  extends React.Component {
+  constructor(props) {
+    super(props);
+    this.handleChange = this.handleChange.bind(this);
+    this.state = {temperature: ''};
+  }
+
+  handleChange(e) {
+    this.setState({temperature: e.target.value});
+  }
+
+  render() {
+    const temperature = this.state.temperature;
+    const scale = this.props.scale;
+
+    return (
+      <fieldset>
+        <legend>Enter temperature in {scaleNames[scale]}</legend>
+        <input value={temperature} onChange={this.handleChange} />
+      </fieldset>
+    )
+  }
+}
+
+class Calculator extends React.Component {
+  render() {
+    return (
+      <div>
+        <TemperatureInput scale='c' />
+        <TemperatureInput scale='f' />
+      </div>
+    )
+  }
+}
+```
+
+4. 섭씨와 화씨를 변환해주는 함수 생성
+
+5. 숫자를 문자열로 반환해주는 함수 생성
+
+6. State 끌어올리기
+- React 에서는 state 를 공유하는 일은 그 값을 필요로 하는 컴포넌트 간의 가장 가까운 공통 조상으로 state 를 끌어 올림으로써 이뤄낼 수 있다.
+```jsx
+const scaleNames = {
+  c: 'Celsius',
+  f: 'Fahrenheit'
+};
+
+function toCelsius(fahrenheit) {
+  return (fahrenheit - 32) * 5 / 9;
+}
+
+function toFahrenheit(celsius) {
+  return (celsius * 9 / 5) + 32;
+}
+
+function tryConvert(temperature, convert) {
+  const input = parseFloat(temperature);
+  if (Number.isNaN(input)) {
+    return '';
+  }
+  const output = convert(input);
+  const rounded = Math.round(output * 1000) / 1000;
+  return rounded.toString();
+}
+
+function BoilingVerdict(props) {
+  if (props.celsius >= 100) {
+    return <p>The water would boil.</p>;
+  }
+  return <p>The water would not boil.</p>;
+}
+
+class TemperatureInput extends React.Component {
+  constructor(props) {
+    super(props);
+    this.handleChange = this.handleChange.bind(this);
+  }
+
+  handleChange(e) {
+    this.props.onTemperatureChange(e.target.value);
+  }
+
+  render() {
+    const temperature = this.props.temperature;
+    const scale = this.props.scale;
+    return (
+      <fieldset>
+        <legend>Enter temperature in {scaleNames[scale]}:</legend>
+        <input value={temperature}
+               onChange={this.handleChange} />
+      </fieldset>
+    );
+  }
+}
+
+class Calculator extends React.Component {
+  constructor(props) {
+    super(props);
+    this.handleCelsiusChange = this.handleCelsiusChange.bind(this);
+    this.handleFahrenheitChange = this.handleFahrenheitChange.bind(this);
+    this.state = {temperature: '', scale: 'c'};
+  }
+
+  handleCelsiusChange(temperature) {
+    this.setState({scale: 'c', temperature});
+  }
+
+  handleFahrenheitChange(temperature) {
+    this.setState({scale: 'f', temperature});
+  }
+
+  render() {
+    const scale = this.state.scale;
+    const temperature = this.state.temperature;
+    const celsius = scale === 'f' ? tryConvert(temperature, toCelsius) : temperature;
+    const fahrenheit = scale === 'c' ? tryConvert(temperature, toFahrenheit) : temperature;
+
+    return (
+      <div>
+        <TemperatureInput
+          scale="c"
+          temperature={celsius}
+          onTemperatureChange={this.handleCelsiusChange} />
+        <TemperatureInput
+          scale="f"
+          temperature={fahrenheit}
+          onTemperatureChange={this.handleFahrenheitChange} />
+        <BoilingVerdict
+          celsius={parseFloat(celsius)} />
+      </div>
+    );
+  }
+}
+
+ReactDOM.render(
+  <Calculator />,
+  document.getElementById('root')
+);
+```
+
+교훈?
+- 다른 컴포넌트 간에 존재하는 state 를 동기화시키려는 노력보단, 하향식 데이터 흐름에 기대는 걸 추천한다.
+- state 를 끌어올리는 작업은 양방향 바인딩 접근 방식보다 더 많으 보일러 플레이트 코드를 유발하지만, 버그를 찾고 격리하기 더 쉽게 만든다는 장점이 있다.
+- 어떤 값이 props 또는  state 로 부터 계산될 수 있다면, 아마도 그 값을 state 에 두어서는 안된다.
+- UI 에서 무언가 잘못된 부분이 있을 경우, React Developer Tools 를 이용하여 props 를 검사하고 state 갱신할 책임이 있는 컴포넌트를 찾을 때까지 트리를 따라 탐색함으로, 소스 코드에서 버그를 추적할 수 있다.
+
 # 추가
 React 에서는 이벤트가 처리되는 방식, 시간에 따라 state 가 변하는 방식, 화면에 표시하기 위해 데이터가 준비되는 방식 등 렌더링 로직이 본질적으로 다른 UI 로직과 연결된다.
 
