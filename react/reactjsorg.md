@@ -1492,6 +1492,188 @@ ReactDOM.render(
 - 어떤 값이 props 또는  state 로 부터 계산될 수 있다면, 아마도 그 값을 state 에 두어서는 안된다.
 - UI 에서 무언가 잘못된 부분이 있을 경우, React Developer Tools 를 이용하여 props 를 검사하고 state 갱신할 책임이 있는 컴포넌트를 찾을 때까지 트리를 따라 탐색함으로, 소스 코드에서 버그를 추적할 수 있다.
 
+# 합성(Composition) vs 상속(Inheritance)
+React 는 강력한 합성 모델을 가지고 있으며, 상속 대신 합성을 사용하여 컴포넌트 간에 코드를 재사용하는 것이 좋다.
+
+컴포넌트에서 다른 컴포넌트를 담기
+- 어떤 컴포넌트들을 어떤 자식 엘리머트가 들어올 지 미리 예상할 수 없는 경우가 있다.
+- 범용적인 박스 역할을 하는 Sidebar 혹은 Dialog 와 같은 컴포넌트에서 자주 볼 수 있다.
+- 이러한 컴포넌트에는 특수한 children prop 을 사용하여 자식 엘리먼트를 출력에 그대로 전달하는 것이 좋다.
+
+```jsx
+function FancyBorder(props) {
+  return (
+    <div className={'FancyBorder FancyBorder-' + props.color}>
+      {props.children}
+    </div>
+  )
+}
+
+function WelcomeDialog() {
+  return (
+    <FancyBorder color='blue'>
+      <h1 className='Dialog-title'>
+        Welcome
+      </h1>
+      <p className='Dialog-message'>
+        Thank you for visiting our spacecraft!!!
+      </p>
+    </FancyBorder>
+  );
+}
+
+ReactDOM.render(
+  <WelcomeDialog />,
+  document.getElementById('root')
+);
+```
+  - `FancyBorder` 태그 안에 있던 것들이 children prop 으로 전달된다.
+- 흔하진 않지만 종종 컴포넌트에 여러 개의 구멍이 필요할 수 도 있다. 이런 경우 children 대신 자신만의 고유한 방식을 적용할 수 있다.
+```jsx
+function Contacts() {
+  return <div className="Contacts" />;
+}
+
+function Chat() {
+  return <div className="Chat" />;
+}
+
+function SplitPane(props) {
+  return (
+    <div className="SplitPane">
+      <div className="SplitPane-left">
+        {props.left}
+      </div>
+      <div className="SplitPane-right">
+        {props.right}
+      </div>
+    </div>
+  );
+}
+
+function App() {
+  return (
+    <SplitPane
+      left={
+        <Contacts />
+      }
+      right={
+        <Chat />
+      } />
+  );
+}
+```
+
+특수화
+- 때로는 어떤 컴포넌트의 특수한 경우인 컴포넌트를 고려해야 하는 경우가 있다.
+- 아래의 예시가 특수한 경우이다. 이는 React 에서 합성을 통해 해결 할 수 있다.
+- 더 구체적인 컴포넌트가 일반적인 컴포넌트를 렌더링하고, props 를 통해 내용을 구성
+```jsx
+function FancyBorder(props) {
+  return (
+    <div className={'FancyBorder FancyBorder-' + props.color}>
+      {props.children}
+    </div>
+  );
+}
+
+function Dialog(props) {
+  return (
+    <FancyBorder color="blue">
+      <h1 className="Dialog-title">
+        {props.title}
+      </h1>
+      <p className="Dialog-message">
+        {props.message}
+      </p>
+    </FancyBorder>
+  );
+}
+
+function WelcomeDialog() {
+  return (
+    <Dialog
+      title="Welcome"
+      message="Thank you for visiting our spacecraft!" />
+  );
+}
+
+ReactDOM.render(
+  <WelcomeDialog />,
+  document.getElementById('root')
+);
+```
+- 합성은 아래의 코드 처럼 클래스로 정의된 컴포넌트에서도 동일하게 적용된다.
+```jsx
+function FancyBorder(props) {
+  return (
+    <div className={'FancyBorder FancyBorder-' + props.color}>
+      {props.children}
+    </div>
+  );
+}
+
+function Dialog(props) {
+  return (
+    <FancyBorder color='blue'>
+      <h1 className='Dialog-title'>
+        {props.title}
+      </h1>
+      <p className='Dialog-message'>
+        {props.message}
+      </p>
+      {props.children}
+    </FancyBorder>
+  )
+}
+
+
+class SignUpDialog extends React.Component {
+  constructor(props) {
+    super(props);
+    this.handleChange = this.handleChange.bind(this);
+    this.handleSignUp = this.handleSignUp.bind(this);
+
+    this.state = {
+      login: ''
+    };
+  }
+
+  render() {
+    return(
+      <Dialog
+        title='Mars Exploration Program'
+        message='How should we refer to you?'
+      >
+          <input
+            value={this.state.login}
+            onChange={this.handleChange}
+          />
+          <button
+            onClick={this.handleSignUp}
+          >
+            Sign Me Up!
+          </button>
+      </Dialog>
+    )
+  }
+
+  handleChange(e) {
+    this.setState({
+      login: e.target.value
+    });
+  }
+
+  handleSignUp() {
+    alert(`Welcome aboard, ${this.state.login}`);
+  }
+}
+```
+
+그렇다면 상속은???
+- Facebook 에서는 수천 개의 React 컴포넌트를 사용하지만, 컴포넌트를 상속 계층 구조로 작성을 권장할만한 사례를 아직 찾지 못했다.
+- props 와 합성은 명시적이고 안전한 방법으로 컴포넌트의 모양과 동작을 커스터마이징하는데 필요한 모든 유연성을 제공한다.
+
 # 추가
 React 에서는 이벤트가 처리되는 방식, 시간에 따라 state 가 변하는 방식, 화면에 표시하기 위해 데이터가 준비되는 방식 등 렌더링 로직이 본질적으로 다른 UI 로직과 연결된다.
 
@@ -1502,5 +1684,9 @@ React 는 별도의 파일에 마크업과 로직을 넣어 기술을 인위적�
 개념적으로 컴포넌트는 JavaScript 함수와 유사하다. props 라고 하는 임의의 입력을 받은 후, 화면에 어떻게 표시되는지를 기술하는 React  엘리먼틀 반환
 
 컴포넌트의 이름은 항상 대문자로 시작한다.
+
+컴포넌트가 원시 타입의 값, React 엘리먼트 혹은 함수 등 어떠한 props 도 받을 수 있다는 것을 기억하세요.
+
+UI 가 아닌 기능을 여러 컴포넌트에서 재사용하기를 원한다면, 별도의 JS 모듈로 분리하는 것이 좋으며, 컴포넌트에서 해당 함수, 객체, 클래스 등을 상속 없이 import 하여 사용할 수 있다.
 # 참고
 https://gist.github.com/gaearon/683e676101005de0add59e8bb345340c
