@@ -1492,7 +1492,7 @@ ReactDOM.render(
 - 어떤 값이 props 또는  state 로 부터 계산될 수 있다면, 아마도 그 값을 state 에 두어서는 안된다.
 - UI 에서 무언가 잘못된 부분이 있을 경우, React Developer Tools 를 이용하여 props 를 검사하고 state 갱신할 책임이 있는 컴포넌트를 찾을 때까지 트리를 따라 탐색함으로, 소스 코드에서 버그를 추적할 수 있다.
 
-# 합성(Composition) vs 상속(Inheritance)
+# 11. 합성(Composition) vs 상속(Inheritance)
 React 는 강력한 합성 모델을 가지고 있으며, 상속 대신 합성을 사용하여 컴포넌트 간에 코드를 재사용하는 것이 좋다.
 
 컴포넌트에서 다른 컴포넌트를 담기
@@ -1674,6 +1674,250 @@ class SignUpDialog extends React.Component {
 - Facebook 에서는 수천 개의 React 컴포넌트를 사용하지만, 컴포넌트를 상속 계층 구조로 작성을 권장할만한 사례를 아직 찾지 못했다.
 - props 와 합성은 명시적이고 안전한 방법으로 컴포넌트의 모양과 동작을 커스터마이징하는데 필요한 모든 유연성을 제공한다.
 
+# 12. React 로 사고하기
+React 의 가장 멋진 점 중 하나는 앱을 설계하는 방식
+
+해당 내용을 통해 React 로 상품들을 검색할 수 있는 데이터 테이블을 만드는 과정을 진행
+
+목업으로 시작하기
+```json
+[
+  {category: "Sporting Goods", price: "$49.99", stocked: true, name: "Football"},
+  {category: "Sporting Goods", price: "$9.99", stocked: true, name: "Baseball"},
+  {category: "Sporting Goods", price: "$29.99", stocked: false, name: "Basketball"},
+  {category: "Electronics", price: "$99.99", stocked: true, name: "iPod Touch"},
+  {category: "Electronics", price: "$399.99", stocked: false, name: "iPhone 5"},
+  {category: "Electronics", price: "$199.99", stocked: true, name: "Nexus 7"}
+];
+```
+
+1. 단계: UI 를 컴포넌트 계층 구조로 나누기
+- 모든 컴포넌트(와 하위 컴포넌트)의 주변에 박스를 그리고 그 각각에 이름에 붙이는 것
+- 어떤 것이 컴포넌트가 되어야 할까?
+  - 우리가 새로운 함수나 객체를 만들 때처럼 만들면됨
+  - 한 가지 테크닉은 단일 책임 원칙으로 하나의 컴포넌트는 한 가지 일을 하는게 이상적이라는 원칙
+  - 하나의 컴포넌트가 커지게 된다면 이는 보다 작은 하위 컴포넌트로 분리되어야 한다.
+- 각 컴포넌트가 데이터 모델의 한조각을 나타내도록 분리
+  - FilterableProductTable Component: 전체를 포괄
+  - SearchBar Component: 모든 유저의 입력을 받음
+  - ProductTable Component: 유저의 입력을 기반으로 데이터 콜렉션을 필터링 해서 보여줌
+  - ProductCategoryRow Component: 각 카테고리의 헤더를 보여줌
+  - ProductRow Component: 각각의 제품에 해당하는 행을 보여줌
+  ```
+  // 아래와 같은 계층 구조의 자식으로 나타낼 것이다.
+  FilterableProductTable
+    SearchBar
+    ProductTable
+      ProductCategoryRow
+      ProductRow
+  ```
+2. React 로 정적인 버전 만들기
+- 일단 가장 쉬운 방법은 데이터 모델을 가지고 UI 를 렌더링은 되지만 아무 동작도 없는 버전을 만들어 보는 것이다.
+- 정적 버전을 만드는 것은 생각은 적게 필요하지만 타이핑은 많이 필요로 하며, 상호 작용을 만드는 것은 생각은 많이 해야 하지만 타이핑은 적게 필요하다.
+- 정적 버전을 만들기 위해 state 를 사용하지말라, state 는 오직 상호 작용을 위해, 즉 시간이 지남에 따라 데이터가 바뀌는 것에 사용
+- 앱을 만들때는 하향식(top down) 또는 상향식(bottom-up) 으로 만들 수 있다.
+- 보통은 하향식으로 만드는 게 쉽지만, 프로젝트가 커지면 상향식으로 만들고 테스트를 작성하면서 개발하기가 더 쉽다.
+- 해당 단계가 끝나면 데이터 렌더링을 위해 만들어진 재사용 가능한 컴포넌트들의 라이브러리를 가지게 된다.
+- React 의 단방향 데이터 흐름(one-way data flow) (또는 단방향 바인딩(one-way binding)는 모든 것을 모듈화 하고 빠르게 만들어 준다.
+
+3. UI state 에 대한 최소한의 표현 찾아내기
+- UI 를 상호작용하게 만들려면 기반 데이터 모델을 변경할 수 있는 방법이 있어야 한다. 이를 state 를 통해 변경한다.
+- 애플리케이션을 올바르게 만들기 위해서는 애플리케이션에서 필요로 하는 변경 가능한 state 의 최소 집합을 생각해 보아야한다.
+- 여기서 핵심은 중복 배제 원칙이다.
+  - 애플리케이션이 필요로 하는 가장 최소한의 stateㄹ 를 찾고 이를 통해 나머지 모든 것들이 필요에 따라 그때 그때 계산되도록 만들어야 한다.
+- 3가지 질문을 통해 state 가 되어야 하는지 확인할 수 있다.
+  - 부모로부터 props 를 통해 전달되는가? 그러면 확실히 state 가 아니다
+  - 시간이 지나도변하지 않나? 그러면 확실히 state 가 아니다.
+  - 컴포넌트 안의 다른 state 나 props 를 가지고 계산 가능? 그렇다면 state 가 아님
+
+4. State 가 어디에 있어야 할 지 찾기
+- 어떤 컴포넌트가 state 를 변경하거나 소유할지 찾아야 한다.
+- React 는 항상 컴포넌트 계층구조를 따라 아래로 내려가는 단방향 데이터 흐름을 따름
+- 애플리케이션이 가지는 각각의 state에 대해서
+  - state 를 기반으로 렌더링하는 모든 컴포넌트를 찾으시오
+  - 공통 소유 컴포넌트를 찾으세요
+  - 공통 혹은 더 상위에 있는 컴포넌트가 state 를 가져야함
+  - state 를 소유할 적절한 컴포넌트를 찾지 못하였다면, state 를 소유하는 컴포넌트를 하나 만들어서 공통 오너 컴포넌트의 상위 계층에 추가
+
+5. 역방향 데이터 흐름 추가하기
+- React 는 전동적인 양방향 데이터 바인딩(two-way data binding) 과 비교하면 더많은 타이핑을 필요로 하지만 데이터 흐름을 명시적으로 보이게 만들어서 프로그램이 어떻게 동작하는지 파악할 수 있게 도와줌
+```jsx
+class ProductCategoryRow extends React.Component {
+  render() {
+    const category = this.props.category;
+    return (
+      <tr>
+        <th colSpan="2">
+          {category}
+        </th>
+      </tr>
+    );
+  }
+}
+
+class ProductRow extends React.Component {
+  render() {
+    const product = this.props.product;
+    const name = product.stocked ?
+      product.name :
+      <span style={{color: 'red'}}>
+        {product.name}
+      </span>;
+
+    return (
+      <tr>
+        <td>{name}</td>
+        <td>{product.price}</td>
+      </tr>
+    );
+  }
+}
+
+class ProductTable extends React.Component {
+  render() {
+    const filterText = this.props.filterText;
+    const inStockOnly = this.props.inStockOnly;
+
+    const rows = [];
+    let lastCategory = null;
+
+    this.props.products.forEach((product) => {
+      if (product.name.indexOf(filterText) === -1) {
+        return;
+      }
+      if (inStockOnly && !product.stocked) {
+        return;
+      }
+      if (product.category !== lastCategory) {
+        rows.push(
+          <ProductCategoryRow
+            category={product.category}
+            key={product.category} />
+        );
+      }
+      rows.push(
+        <ProductRow
+          product={product}
+          key={product.name}
+        />
+      );
+      lastCategory = product.category;
+    });
+
+    return (
+      <table>
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Price</th>
+          </tr>
+        </thead>
+        <tbody>{rows}</tbody>
+      </table>
+    );
+  }
+}
+
+class SearchBar extends React.Component {
+  constructor(props) {
+    super(props);
+    this.handleFilterTextChange = this.handleFilterTextChange.bind(this);
+    this.handleInStockChange = this.handleInStockChange.bind(this);
+  }
+  
+  handleFilterTextChange(e) {
+    this.props.onFilterTextChange(e.target.value);
+  }
+  
+  handleInStockChange(e) {
+    this.props.onInStockChange(e.target.checked);
+  }
+  
+  render() {
+    return (
+      <form>
+        <input
+          type="text"
+          placeholder="Search..."
+          value={this.props.filterText}
+          onChange={this.handleFilterTextChange}
+        />
+        <p>
+          <input
+            type="checkbox"
+            checked={this.props.inStockOnly}
+            onChange={this.handleInStockChange}
+          />
+          {' '}
+          Only show products in stock
+        </p>
+      </form>
+    );
+  }
+}
+
+class FilterableProductTable extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      filterText: '',
+      inStockOnly: false
+    };
+    
+    this.handleFilterTextChange = this.handleFilterTextChange.bind(this);
+    this.handleInStockChange = this.handleInStockChange.bind(this);
+  }
+
+  handleFilterTextChange(filterText) {
+    this.setState({
+      filterText: filterText
+    });
+  }
+  
+  handleInStockChange(inStockOnly) {
+    this.setState({
+      inStockOnly: inStockOnly
+    })
+  }
+
+  render() {
+    return (
+      <div>
+        <SearchBar
+          filterText={this.state.filterText}
+          inStockOnly={this.state.inStockOnly}
+          onFilterTextChange={this.handleFilterTextChange}
+          onInStockChange={this.handleInStockChange}
+        />
+        <ProductTable
+          products={this.props.products}
+          filterText={this.state.filterText}
+          inStockOnly={this.state.inStockOnly}
+        />
+      </div>
+    );
+  }
+}
+
+
+const PRODUCTS = [
+  {category: 'Sporting Goods', price: '$49.99', stocked: true, name: 'Football'},
+  {category: 'Sporting Goods', price: '$9.99', stocked: true, name: 'Baseball'},
+  {category: 'Sporting Goods', price: '$29.99', stocked: false, name: 'Basketball'},
+  {category: 'Electronics', price: '$99.99', stocked: true, name: 'iPod Touch'},
+  {category: 'Electronics', price: '$399.99', stocked: false, name: 'iPhone 5'},
+  {category: 'Electronics', price: '$199.99', stocked: true, name: 'Nexus 7'}
+];
+
+ReactDOM.render(
+  <FilterableProductTable products={PRODUCTS} />,
+  document.getElementById('container')
+);
+
+```
+짧은 소개: Props vs State
+- https://ko.reactjs.org/docs/faq-state.html#what-is-the-difference-between-state-and-props
+
 # 추가
 React 에서는 이벤트가 처리되는 방식, 시간에 따라 state 가 변하는 방식, 화면에 표시하기 위해 데이터가 준비되는 방식 등 렌더링 로직이 본질적으로 다른 UI 로직과 연결된다.
 
@@ -1688,5 +1932,6 @@ React 는 별도의 파일에 마크업과 로직을 넣어 기술을 인위적�
 컴포넌트가 원시 타입의 값, React 엘리먼트 혹은 함수 등 어떠한 props 도 받을 수 있다는 것을 기억하세요.
 
 UI 가 아닌 기능을 여러 컴포넌트에서 재사용하기를 원한다면, 별도의 JS 모듈로 분리하는 것이 좋으며, 컴포넌트에서 해당 함수, 객체, 클래스 등을 상속 없이 import 하여 사용할 수 있다.
+
 # 참고
 https://gist.github.com/gaearon/683e676101005de0add59e8bb345340c
