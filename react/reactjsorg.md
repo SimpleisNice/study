@@ -46,7 +46,7 @@ ReactDOM.render(
 JSX 는 주입 공격을 방지한다.
 - 기본적으로 React DOM 은 JSX 에 삽입된 모든 값을 렌더링하기 전에 이스케이프 하므로, 애플리케이션에 명시적으로 작성되지 않은 내용은 주입되지 않는다.
 
-모든 항목은 렌더링 되기 전에 문자열로 환된다. 이런 특성으로 인해 XSS 공격을 방지할 수 있다.
+모든 항목은 렌더링 되기 전에 문자열로 변환된다. 이런 특성으로 인해 XSS 공격을 방지할 수 있다.
 
 JSX 는 객체를 표현한다.
 - Babel 은 JSX 를 React.createElement() 호출로 컴파일한다.
@@ -64,9 +64,10 @@ const element = React.createElement(
 );
 ```
 
-React.createElement() 는 버그가 없는 코드를 작성하는 데 도움이 되도록 몇가지 검사를 수행하며, 기본적으로 아애와 같은 객체를 생성한다.
+React.createElement() 는 버그가 없는 코드를 작성하는 데 도움이 되도록 몇가지 검사를 수행하며, 기본적으로 아래와 같은 객체를 생성한다.
 
 이러한 객체를 React 엘리먼트라고 하며, 이를 화면에 표시하려는 항목에 대한 설명이라 생각할 수 있다.
+
 ```jsx
 const element = {
   type: 'h1',
@@ -77,7 +78,7 @@ const element = {
 }
 ```
 
-React 는 위의 이러한 객체를 읽은 후 DOM 을 구성하고 최신으로 유지하는 데 위와 같은 객체를 사용한다.
+React 는 위와 같은 객체를 사용하여, DOM 을 구성하고 최신으로 유지한다.
 
 # 3. 엘리먼트 렌더링
 
@@ -106,7 +107,7 @@ ReactDOM.render(element, document.getElementById('root'));
 - React 를 기존 앱에 통합하려는 경우 원하는 만큼 많은 수의 독립된 루트 DOM 노드가 있을 수 있습니다.
 - React 엘리먼트를 루트 DOM 노드에 렌더링하면 둘 다 ReactDOM.render() 로 전달하면 된다.
 
-React 엘리먼트는 불변객체이다.
+React 엘리먼트는 불변 객체이다.
 
 엘리먼트를 생성한 이후에는 해당 엘리먼트의 자식이나 속성을 변경할 수 없다.
 
@@ -318,6 +319,7 @@ React 는 매우 유연하지만 한 가지 엄격한 규칙이 있다.
 # 5. State and Lifecycle
 이 섹션에서는 아래의 컴포넌트를 재사용하고 캡슐화 하는 방법에 대해 배울 것이다.
 
+State 는 props 와 유사하지만, 비공개이며 컴포넌트에 의해 완전히 제어된다.
 ```jsx
 // 시계
 function tick() {
@@ -358,21 +360,18 @@ function tick() {
 setInterval(tick, 1000);
 ```
 - 여기서 중요한 요건이 누락되어 있다.
-- Clock 컴포넌트가 타이머를 설정하고 매초 UI 를 업데이트 하는 것이 Clock 컴포넌트의 구현 세부사항이 되어야 한다.
 - 이상적으로 한 번만 코드를 작성하고 Clock 이 스스로 업데이트 하도록 만들어야 한다.
+- 그러므로 타이머를 설정하고 매초 UI 를 업데이트 하는 내용이, Clock 컴포넌트의 세부 구현 사항이 되어야 한다.
 - 이를 구현하기 위해서는 state 를 추가해야 한다.
-
-
-State 는 props 와 유사하지만, 비공개이며 컴포넌트에 의해 완전히 제어된다.
-
 
 함수에서 클래스로 변환하기
 - 다섯 단계로 Clock 과 같은 함수 컴포넌트를 클래스로 변환할 수 있다.
-1. React.Component 를 확장하는 동일한 이름의 class 생성
-2. render() 라고 불리는 빈 메서드를 추가
-3. 함수의 내용을 render() 메서드 안으로 옮김
-4. render() 내용 안에 있는 props 를 this.props 로 변경
-5. 남아있는 빈 함수 선언 삭제
+  1. React.Component 를 확장하는 동일한 이름의 class 생성
+  2. render() 라고 불리는 빈 메서드 추가
+  3. 함수 내용을 render() 메서드 안으로 옮김
+  4. render() 내용 안에 있는 props 를 this.props 로 변경
+  5. 남아있는 빈 함수 선언 삭제
+
     ```jsx
     class Clock extends React.Component {
       render() {
@@ -381,7 +380,7 @@ State 는 props 와 유사하지만, 비공개이며 컴포넌트에 의해 완�
             <h1>Hello, world!</h1>
             <h2>It is {this.props.date.toLocaleTimeString()}</h2>
           </div>
-        )
+        );
       }
     }
     ```
@@ -389,10 +388,10 @@ State 는 props 와 유사하지만, 비공개이며 컴포넌트에 의해 완�
     - 이것은 로컬 state 와 생명 주기 메서드와 같은 부가적인 기능을 사용할 수 있게 해준다.
 
 클래스에 로컬 state 추가하기
-- 위의 코드에서 date 를 props 에서 state로 이동을 해볼것이다.
+- 위 코드에서 date 를 props 에서 state로 이동을 해볼것이다.
 - 가장 먼저 render() 메서드 내 this.props.data 를 this.state.date 로 변경
-- 다음 this.state 를 지정하는 class constructor 를 추가 한다.
-- 마지막으로 `<Clock />` 요소에서 date prop 을 삭제한다.
+- 다음 this.state 를 지정하는 class constructor 를 추가
+- 마지막으로 `<Clock />` 요소에서 date prop 을 삭제
 
 ```jsx
 class Clock extends React.Component {
@@ -400,6 +399,7 @@ class Clock extends React.Component {
     super(props);
     this.state = { date: new Date()};
   }
+  
   render() {
     return (
       <div>
@@ -415,13 +415,11 @@ ReactDOM.render(
   document.getElementById('root')
 );
 ```
-클래스 컴포넌트는 항상 props 로 기본 constructor 를 호출해야 한다.
 
 생명주기 메서드를 클래스에 추가하기
+- 컴포넌트 클래스에서 특별한 메서드를 선언하여, 컴포넌트가 마운트 되거나 언마운트 될때 일부 코드를 작동 시킬 수 있으며, 이러한 메서드들을 생명주기 메서드라고 부른다.
 - 많은 컴포넌트가 있는 애플리케이션에서 컴포넌트가 삭제될 때 해당 컴포넌트가 사용 중이던 리소스를 확보하는 것이 중요
-- 마운트, 언마운트
-- 컴포넌트 클래스에서 특별한 메서드를 선언하여 컴포넌트가 마운트 되거나 언마운트 될 때 일부 코드를 작동할 수 있다.
-  - 이러한 메서드들은 생명주기 메서드라고 불린다.
+
 ```jsx
 class Clock extends React.Component {
   constructor(props) {
@@ -434,9 +432,11 @@ class Clock extends React.Component {
   componentDidMount() {
     this.timerID = setInterval(() => this.tick(), 1000);
   }
+
   componentWillUnmount() {
     clearInterval(this.timerID);
   }
+
   tick() {
     this.setState({
       date: new Date(),
@@ -457,45 +457,49 @@ ReactDOM.render(
   document.getElementById('root'),
 )
 ```
-- componentDidMount() 메서드는 컴포넌트 출력물이 DOM 에 렌더링 된 후 실행
-- componentWillUnMount()
-- 컴포넌트 로컬 state 를 업데이트하기 위해 this.setState() 를 사용한다.
+- `componentDidMount` 메서드는  컴포넌트가 마운트된 직후, 즉 트리에 삽입된 직후에 호출
+- `componentWillUnMount` 메서드는 컴포넌트가 DOM 상에서 제거될 때에 호출
+- 컴포넌트의 로컬 state 를 업데이트하기 위해 `this.setState()` 를 사용
 
 State 를 올바르게 사용하기
 - setState() 에 대해 알아야할 세가지가 있다.
 
 1. 직접 State 를 수정하지마라
-```jsx
-// wrong
-this.state.comment = 'Hello';
+    ```jsx
+    // wrong
+    this.state.comment = 'Hello';
 
-// Correct
-this.setState({comment: 'Hello'});
-```
-- this.state 를 지정할 수 있는 유일한 공간은 바로 constructor 이다.
+    // Correct
+    this.setState({comment: 'Hello'});
+    ```
+    - this.state 를 지정할 수 있는 유일한 공간은 바로 constructor 이다.
 
+    
+  
 2. State 업데이트는 비동기적일 수도 있다.
-```jsx
-// wrong
-// 아래의 코드는 카운터 업데이트에 실패할 수 있다.
-this.setState({
-  counter: this.state.counter + this.props.increment,
-})
 
-// Correct
-this.setState((state, props) => ({
-  counter: state.counter + props.increment
-}));
-// Correct
-this.setState(function(state, props) {
-  return {
-    counter: state.counter + props.increment
-  };
-})
-```
-- React 는 성능을 위해 여러 setState() 호출을 단일 업데이트로 한꺼번에 처리할 수 있다.
-- this.props 와 this.state 가 비동기적으로 업데이트될 수 있기 때문에 다음 state를 계산할 때 해당 값에 의존해서는 안된다.
-- 이를 수정하기 위해 객체보다는 함수를 인자로 사용하는 다른 형태의 setState() 를 사용한다.
+    ```jsx
+    // wrong
+    // 아래의 코드는 카운터 업데이트에 실패할 수 있다.
+    this.setState({
+      counter: this.state.counter + this.props.increment,
+    })
+
+    // Correct
+    this.setState((state, props) => ({
+      counter: state.counter + props.increment
+    }));
+
+    // Correct
+    this.setState(function(state, props) {
+      return {
+        counter: state.counter + props.increment
+      };
+    })
+    ```
+    - React 는 성능을 위해 여러 setState() 호출을 단일 업데이트로 한꺼번에 처리할 수 있다.
+    - this.props 와 this.state 가 비동기적으로 업데이트될 수 있기 때문에 다음 state를 계산할 때 해당 값에 의존해서는 안된다.
+    - 이를 수정하기 위해 객체보다는 함수를 인자로 사용하는 다른 형태의 setState() 를 사용한다.
 
 State 업데이트는 병합된다.
 - setState() 를 호출할 때 React 는 제공한 객체를 현재 state 로 병합한다.
@@ -555,13 +559,13 @@ React 엘리먼트에서 이벤트를 처리하는 방식은 DOM 엘리먼트에
 <button onClick={activateLaser}></button>
 ```
 - React 에서 false 를 반환해도 기본 동작을 방지할 수 없다.
-- 반드시 preventDefault 를 명식적으로 호출해야 한다.
+- 반드시 `preventDefault` 를 명식적으로 호출해야 한다.
 
 React 는 W3C 명세에 따라 합성 이벤트를 정의하기 때문에 브라우저 호환성에 대해 걱정할 필요가 없다.
 
 React 이벤트는 브라우저 고유 이벤트와 정확히 동일하게 동작하지 않는다.
 
-React 를 사용할 때 DOM 엘리먼트가 생성된 후 리스너를 추가하기 위해 addEventListener 를 호출할 필요가 없다. 대신 엘리먼트가 처음 렌더링될 때 리스너를 제공하면 된다.
+React 를 사용할 때 DOM 엘리먼트가 생성된 후 리스너를 추가하기 위해 `addEventListener` 를 호출할 필요가 없다. 대신 엘리먼트가 처음 렌더링될 때 리스너를 제공하면 된다.
 
 ```jsx
 class Toggle extends React.Component {
@@ -596,7 +600,7 @@ ReactDOM.render(
 ```
 - this 의 의미에 대해 주의해야함
 - javascript 에서 클래스 메서드는 기본적으로 바인딩되어 있지 않다.
-- 일반적으로 onClick={this.handleClick} 과 같이 뒤에 () 를 사용하지 않고 메서드를 참조하는 경우, 해당 메서드를 바인딩 해야함
+- 일반적으로 `onClick={this.handleClick}` 과 같이 뒤에 소괄호 를 사용하지 않고 메서드를 참조하는 경우, 해당 메서드를 바인딩 해야함
 
 
 바인딩을 해결하기 위해
@@ -633,6 +637,7 @@ class LoggingButton extends React.Component {
 
 이벤트 핸들러에 인자 전달하기
 - 루프 내부에서는 이벤트 핸들러에 추가적인 매개변수를 전달하는 것이 일반적
+
 ```jsx
 <button onClick={(e) => this.deleteRow(id, e)}>Delete Row</button>
 <button onClick={this.deleteRow.bind(this, id)}>Delete Row</button>
@@ -640,13 +645,14 @@ class LoggingButton extends React.Component {
 
 
 # 7. 조건부 렌더링
+
 React 에서는 원하는 동작을 캡슐화하는 컴포넌트를 만들 수 있다.
 
 이렇게 하면 애플리케이션의 상태에 따라서 컴포넌트 중 몇개만을 렌더링할 수 있다.
 
-React 에서 조건부 렌더링은 JavaScript 에서의 조건 처리와 같이 동작한다.
-- if 나 조건부 연산자와 같은 JavaScript 연산자를 현재 상태를 나타내는 엘리먼트를 만드는데 사용
-- 그러면 React 는 현재 상태에 맞게 UI 를 업데이트할 것이다.
+React 에서 조건부 렌더링은 JavaScript 의 조건 처리와 동일하다.
+- 현재 상태를 나타내는 엘리먼트를 만들기 위해 if 나 조건부 연산자를 사용
+- React 는 조건에 맞는 현재 상태를 UI 에 를 업데이트 할 것이다.
 
 ```jsx
 function UserGreeting (props) {
@@ -751,7 +757,7 @@ ReactDOM.render(
 );
 ```
 
-논리 && 연산자로 IF 를 인라인으로 표현하기
+`&&`는 논리 연산자로 IF 를 인라인으로 표현할 수 있다.
 - JSX 안에는 중괄호를 이용해서 표현식을 포함할 수 있다.
 - && 논리 연산자를 사용하면 쉽게 엘리먼트를 조건부로 넣을 수 있다.
 ```jsx
@@ -777,8 +783,8 @@ ReactDOM.render(
   document.getElementById('root')
 );
 ```
-- JavaScript 에서 `true && expression` 은 항상 expression 으로 평가되고 `false && expression` 은 항상 false 로 평가된다.
-- 따라서 && 뒤의 엘리먼트 조건이 true 일때 출력되며, false 라면 React 는 무시한다.
+- JavaScript 에서 `true && expression` 은 항상 `expression` 으로 평가되고 `false && expression` 은 항상 `false` 로 평가된다.
+- 따라서 `&&` 뒤의 엘리먼트 조건이 `true` 일때 출력되며, `false` 라면 React 는 무시한다.
 ```jsx
 class Temp extends React.Component {
   constructor(props) {
@@ -801,9 +807,9 @@ ReactDOM.render(
   document.getElementById('root')
 )
 ```
-- false 로 평가될 수 있는 표현식을 반환하면 && 뒤에 있는 표현식은 건너뛰지만 false 로 평가 될 수 있는 표현식이 반환된다.
+- `false` 로 평가될 수 있는 표현식을 반환하면 `&&` 뒤에 있는 표현식은 건너뛰지만 false 로 평가 될 수 있는 표현식이 반환된다.
 
-조건부 연산자로 If-Else
+조건부 연산자로 `If-Else`
 ```jsx
 render() {
   const isLoggedIn = this.state.isLoggedIn;
@@ -822,8 +828,8 @@ render() {
 - 엘리먼트를 조건부로 렌더링하는 다른 방법은 조건부 연산자인 `condition ? true : false` 를 사용하는 것이다.
 
 컴포넌트가 렌더링하는 것을 막기
-- 가끔 다른 컴포넌트에 의해 렌더링될 때 컴포넌트 자체를 숨기고 싶을 대가 있을 수 있다.
-- 이때는 렌더링 결과를 출력하는 대신 null 반환하면 해결 할 수 있다.
+- 다른 컴포넌트에 의해 렌더링될 때, 컴포넌트 자체를 숨기고 싶은 경우가 있다.
+- 이때는 렌더링 결과를 출력하는 대신 `null` 을 반환하여 해결할 수 있다.
 
 ```jsx
 function WarningBanner (props) {
@@ -895,6 +901,7 @@ ReactDOM.render(
 
 기본 리스트 컴포넌트
 - 일반적으로 컴포넌트 안에서 리스트를 렌더링한다.
+
 ```jsx
 function NumberList(props) {
   const numbers = props.numbers;
@@ -911,9 +918,9 @@ ReactDOM.render(
   document.getElementById('root')
 );
 ```
-- 위 코드를 실행하면 리스트의 각 항목에 key 를 넣어야 한다는 경고가 표시된다.
+- 위 코드를 실행하면 리스트의 각 항목에 `key` 를 넣어야 한다는 경고가 표시된다.
 - `key` 는 엘리먼트 리스트를 만들 때 포함해야 하는 특수한 문자열 어트리뷰트 이다.
-- 이를 해결하기 위해 li 내에 `<li key={number.toString()}>{number}</li>` 로 변경해야한다.
+- 이를 해결하기 위해 `li` 내에 `<li key={number.toString()}>{number}</li>` 로 변경해야한다.
 
 ```jsx
 function NumberList(props) {
@@ -1050,7 +1057,7 @@ HTML 폼 엘리먼트는 폼 엘리먼트 자체가 내부 상태를 가지기 �
 제어 컴포넌트 (Controlled Component)
 - HTML 에서 `input`, `textarea`, `select` 와 같은 폼 엘리먼트는 일반적으로 사용자의 입력을 기반으로 자신의 state 를 관리하고 업데이트 한다.
 - React 에서는 변경할 수 있는 state 가 일반적으로 컴포넌트의 state 속성에 유지되며 `setState()` 에 의해 업데이트 된다.
-- 우리는 React state 를 신뢰 가능한 단일 출처(single source of truth) 로 만들어 두 요소를 결합할 수 있다.
+- 우리는 React state 를 `신뢰 가능한 단일 출처(single source of truth)` 로 만들어 두 요소를 결합할 수 있다.
 - 그러면 폼을 렌더링 하는 React 컴포넌트는 폼에 발생하는 사용자 입력 값이 제어한다.
 - 이러한 방식으로 React 에 의해 값이 제어되는 입력 폼 엘리먼트를 제어 컴포넌트라고 한다.
 
@@ -1202,7 +1209,7 @@ file input 태그
 - 값이 읽기 전용이기 때문에 React 에서는 비제어 컴포넌이다.
 
 다중 입력 제어하기
-- 여러 input 엘리먼트를 제어해야할 대, 각 엘리먼트에 name 어트리뷰트를 추가하고 event.target.name 값을 통해 핸들러가 어떤 작업을 할지 선택할 수 있게 해준다.
+- 여러 input 엘리먼트를 제어해야할대, 각 엘리먼트에 name 어트리뷰트를 추가하고 `event.target.name` 값을 통해 핸들러가 어떤 작업을 할지 선택할 수 있게 해준다.
 
 ```jsx
 class Reservation extends React.Component {
@@ -1222,7 +1229,7 @@ class Reservation extends React.Component {
     const name = target.name;
 
     this.setState({
-      [name]: value
+      [name]: value,  
     });
   }
 
@@ -1291,95 +1298,94 @@ setTimeout(function() {
 2. Calculator 라는 이름의 컴포넌트 생성
     - 해당 컴포넌트는 온도를 입력할 수 있는 `<input>` 을 렌더링하고 그 값을 this.state.temperature 에 저장
     - 또한 현재 입력값에 대한 BoilingVerdict 컴포넌트를 렌더링한다.
-```jsx
-function BoilingVerdict(props) {
-  if (props.celsius >= 100) {
-    return <p>The water would boild.</p>;
-  }
+    ```jsx
+    function BoilingVerdict(props) {
+      if (props.celsius >= 100) {
+        return <p>The water would boild.</p>;
+      }
 
-  return <p>The water would not boild</p>
-}
+      return <p>The water would not boild</p>
+    }
 
-class Calculator extends React.Component {
-  constructor(props) {
-    super(props);
-    
-    this.handleChange = this.handleChange.bind(this);
-    this.state = {temperature: ''};
-  }
+    class Calculator extends React.Component {
+      constructor(props) {
+        super(props);
+        this.handleChange = this.handleChange.bind(this);
+        this.state = {temperature: ''};
+      }
 
-  handleChange(e) {
-    this.setState({temperature: e.target.value});
-  }
-  
-  render() {
-    const temperature = this.state.temperature;
+      handleChange(e) {
+        this.setState({temperature: e.target.value});
+      }
+      
+      render() {
+        const temperature = this.state.temperature;
 
-    return (
-      <fieldset>
-        <legend>Enter temperature in Celsius:</legend>
-        <input
-          value={temperature}
-          onChange={this.handleChange}
-        />
-        <BoilingVerdict celsius={parseFloat(temperature)}/>
-      </fieldset>
-    );
-  }
-}
-```
+        return (
+          <fieldset>
+            <legend>Enter temperature in Celsius:</legend>
+            <input
+              value={temperature}
+              onChange={this.handleChange}
+            />
+            <BoilingVerdict celsius={parseFloat(temperature)}/>
+          </fieldset>
+        );
+      }
+    }
+    ```
 
 
-3. 2 번에서 작업한 Calculator 에서 TemperatureInput 컴포넌틀 빼내는 작업 및 c, f 의 값을 가질 수 있는 scale prop 추가
-```jsx
-const scaleNames = {
-  c: 'Celsius',
-  f: 'Fahrenheit',
-}
+3. 위에서 작업한 Calculator 에서 TemperatureInput 컴포넌틀 빼내는 작업 및 c, f 의 값을 가질 수 있는 scale prop 추가
+    ```jsx
+    const scaleNames = {
+      c: 'Celsius',
+      f: 'Fahrenheit',
+    }
 
-function BoilingVerdict(props) {
-  if (props.celsius >= 100) {
-    return <p>The water would boild.</p>;
-  }
+    function BoilingVerdict(props) {
+      if (props.celsius >= 100) {
+        return <p>The water would boild.</p>;
+      }
 
-  return <p>The water would not boild</p>
-}
+      return <p>The water would not boild</p>
+    }
 
-class TemperatureInput  extends React.Component {
-  constructor(props) {
-    super(props);
-    this.handleChange = this.handleChange.bind(this);
-    this.state = {temperature: ''};
-  }
+    class TemperatureInput  extends React.Component {
+      constructor(props) {
+        super(props);
+        this.handleChange = this.handleChange.bind(this);
+        this.state = {temperature: ''};
+      }
 
-  handleChange(e) {
-    this.setState({temperature: e.target.value});
-  }
+      handleChange(e) {
+        this.setState({temperature: e.target.value});
+      }
 
-  render() {
-    const temperature = this.state.temperature;
-    const scale = this.props.scale;
+      render() {
+        const temperature = this.state.temperature;
+        const scale = this.props.scale;
 
-    return (
-      <fieldset>
-        <legend>Enter temperature in {scaleNames[scale]}</legend>
-        <input value={temperature} onChange={this.handleChange} />
-      </fieldset>
-    )
-  }
-}
+        return (
+          <fieldset>
+            <legend>Enter temperature in {scaleNames[scale]}</legend>
+            <input value={temperature} onChange={this.handleChange} />
+          </fieldset>
+        )
+      }
+    }
 
-class Calculator extends React.Component {
-  render() {
-    return (
-      <div>
-        <TemperatureInput scale='c' />
-        <TemperatureInput scale='f' />
-      </div>
-    )
-  }
-}
-```
+    class Calculator extends React.Component {
+      render() {
+        return (
+          <div>
+            <TemperatureInput scale='c' />
+            <TemperatureInput scale='f' />
+          </div>
+        )
+      }
+    }
+    ```
 
 4. 섭씨와 화씨를 변환해주는 함수 생성
 
@@ -1387,116 +1393,120 @@ class Calculator extends React.Component {
 
 6. State 끌어올리기
 - React 에서는 state 를 공유하는 일은 그 값을 필요로 하는 컴포넌트 간의 가장 가까운 공통 조상으로 state 를 끌어 올림으로써 이뤄낼 수 있다.
-```jsx
-const scaleNames = {
-  c: 'Celsius',
-  f: 'Fahrenheit'
-};
+    ```jsx
+    const scaleNames = {
+      c: 'Celsius',
+      f: 'Fahrenheit'
+    };
 
-function toCelsius(fahrenheit) {
-  return (fahrenheit - 32) * 5 / 9;
-}
+    function toCelsius(fahrenheit) {
+      return (fahrenheit - 32) * 5 / 9;
+    }
 
-function toFahrenheit(celsius) {
-  return (celsius * 9 / 5) + 32;
-}
+    function toFahrenheit(celsius) {
+      return (celsius * 9 / 5) + 32;
+    }
 
-function tryConvert(temperature, convert) {
-  const input = parseFloat(temperature);
-  if (Number.isNaN(input)) {
-    return '';
-  }
-  const output = convert(input);
-  const rounded = Math.round(output * 1000) / 1000;
-  return rounded.toString();
-}
+    function tryConvert(temperature, convert) {
+      const input = parseFloat(temperature);
 
-function BoilingVerdict(props) {
-  if (props.celsius >= 100) {
-    return <p>The water would boil.</p>;
-  }
-  return <p>The water would not boil.</p>;
-}
+      if (Number.isNaN(input)) {
+        return '';
+      }
 
-class TemperatureInput extends React.Component {
-  constructor(props) {
-    super(props);
-    this.handleChange = this.handleChange.bind(this);
-  }
+      const output = convert(input);
+      const rounded = Math.round(output * 1000) / 1000;
 
-  handleChange(e) {
-    this.props.onTemperatureChange(e.target.value);
-  }
+      return rounded.toString();
+    }
 
-  render() {
-    const temperature = this.props.temperature;
-    const scale = this.props.scale;
-    return (
-      <fieldset>
-        <legend>Enter temperature in {scaleNames[scale]}:</legend>
-        <input value={temperature}
-               onChange={this.handleChange} />
-      </fieldset>
+    function BoilingVerdict(props) {
+      if (props.celsius >= 100) {
+        return <p>The water would boil.</p>;
+      }
+
+      return <p>The water would not boil.</p>;
+    }
+
+    class TemperatureInput extends React.Component {
+      constructor(props) {
+        super(props);
+        this.handleChange = this.handleChange.bind(this);
+      }
+
+      handleChange(e) {
+        this.props.onTemperatureChange(e.target.value);
+      }
+
+      render() {
+        const temperature = this.props.temperature;
+        const scale = this.props.scale;
+
+        return (
+          <fieldset>
+            <legend>Enter temperature in {scaleNames[scale]}:</legend>
+            <input value={temperature} onChange={this.handleChange} />
+          </fieldset>
+        );
+      }
+    }
+
+    class Calculator extends React.Component {
+      constructor(props) {
+        super(props);
+        this.handleCelsiusChange = this.handleCelsiusChange.bind(this);
+        this.handleFahrenheitChange = this.handleFahrenheitChange.bind(this);
+        this.state = {temperature: '', scale: 'c'};
+      }
+
+      handleCelsiusChange(temperature) {
+        this.setState({scale: 'c', temperature});
+      }
+
+      handleFahrenheitChange(temperature) {
+        this.setState({scale: 'f', temperature});
+      }
+
+      render() {
+        const scale = this.state.scale;
+        const temperature = this.state.temperature;
+        const celsius = scale === 'f' ? tryConvert(temperature, toCelsius) : temperature;
+        const fahrenheit = scale === 'c' ? tryConvert(temperature, toFahrenheit) : temperature;
+
+        return (
+          <div>
+            <TemperatureInput
+              scale="c"
+              temperature={celsius}
+              onTemperatureChange={this.handleCelsiusChange} />
+            <TemperatureInput
+              scale="f"
+              temperature={fahrenheit}
+              onTemperatureChange={this.handleFahrenheitChange} />
+            <BoilingVerdict
+              celsius={parseFloat(celsius)} />
+          </div>
+        );
+      }
+    }
+
+    ReactDOM.render(
+      <Calculator />,
+      document.getElementById('root')
     );
-  }
-}
+    ```
 
-class Calculator extends React.Component {
-  constructor(props) {
-    super(props);
-    this.handleCelsiusChange = this.handleCelsiusChange.bind(this);
-    this.handleFahrenheitChange = this.handleFahrenheitChange.bind(this);
-    this.state = {temperature: '', scale: 'c'};
-  }
-
-  handleCelsiusChange(temperature) {
-    this.setState({scale: 'c', temperature});
-  }
-
-  handleFahrenheitChange(temperature) {
-    this.setState({scale: 'f', temperature});
-  }
-
-  render() {
-    const scale = this.state.scale;
-    const temperature = this.state.temperature;
-    const celsius = scale === 'f' ? tryConvert(temperature, toCelsius) : temperature;
-    const fahrenheit = scale === 'c' ? tryConvert(temperature, toFahrenheit) : temperature;
-
-    return (
-      <div>
-        <TemperatureInput
-          scale="c"
-          temperature={celsius}
-          onTemperatureChange={this.handleCelsiusChange} />
-        <TemperatureInput
-          scale="f"
-          temperature={fahrenheit}
-          onTemperatureChange={this.handleFahrenheitChange} />
-        <BoilingVerdict
-          celsius={parseFloat(celsius)} />
-      </div>
-    );
-  }
-}
-
-ReactDOM.render(
-  <Calculator />,
-  document.getElementById('root')
-);
-```
-
-교훈?
+교훈
 - 다른 컴포넌트 간에 존재하는 state 를 동기화시키려는 노력보단, 하향식 데이터 흐름에 기대는 걸 추천한다.
 - state 를 끌어올리는 작업은 양방향 바인딩 접근 방식보다 더 많으 보일러 플레이트 코드를 유발하지만, 버그를 찾고 격리하기 더 쉽게 만든다는 장점이 있다.
-- 어떤 값이 props 또는  state 로 부터 계산될 수 있다면, 아마도 그 값을 state 에 두어서는 안된다.
-- UI 에서 무언가 잘못된 부분이 있을 경우, React Developer Tools 를 이용하여 props 를 검사하고 state 갱신할 책임이 있는 컴포넌트를 찾을 때까지 트리를 따라 탐색함으로, 소스 코드에서 버그를 추적할 수 있다.
+- 어떤 값이 props 또는  state 로 부터 계산될 수 있다면, 그 값을 state 에 두어서는 안된다.
+- UI 에 잘못된 부분이 있을 경우, React Developer Tools 를 이용하여 props 를 검사하고 state 갱신할 책임이 있는 컴포넌트를 찾을 때까지 트리를 따라 탐색함으로, 소스 코드에서 버그를 추적할 수 있다.
 
 # 11. 합성(Composition) vs 상속(Inheritance)
 React 는 강력한 합성 모델을 가지고 있으며, 상속 대신 합성을 사용하여 컴포넌트 간에 코드를 재사용하는 것이 좋다.
 
 컴포넌트에서 다른 컴포넌트를 담기
-- 어떤 컴포넌트들을 어떤 자식 엘리머트가 들어올 지 미리 예상할 수 없는 경우가 있다.
+- 어떤 컴포넌트들을 어떤 자식 엘리머트가 들어올지 미리 예상할 수 없는 경우가 있다.
 - 범용적인 박스 역할을 하는 Sidebar 혹은 Dialog 와 같은 컴포넌트에서 자주 볼 수 있다.
 - 이러한 컴포넌트에는 특수한 children prop 을 사용하여 자식 엘리먼트를 출력에 그대로 전달하는 것이 좋다.
 
@@ -1516,7 +1526,7 @@ function WelcomeDialog() {
         Welcome
       </h1>
       <p className='Dialog-message'>
-        Thank you for visiting our spacecraft!!!
+        Thank you for visiting our space craft!!!
       </p>
     </FancyBorder>
   );
@@ -1529,6 +1539,7 @@ ReactDOM.render(
 ```
   - `FancyBorder` 태그 안에 있던 것들이 children prop 으로 전달된다.
 - 흔하진 않지만 종종 컴포넌트에 여러 개의 구멍이 필요할 수 도 있다. 이런 경우 children 대신 자신만의 고유한 방식을 적용할 수 있다.
+
 ```jsx
 function Contacts() {
   return <div className="Contacts" />;
@@ -1565,9 +1576,12 @@ function App() {
 ```
 
 특수화
-- 때로는 어떤 컴포넌트의 특수한 경우인 컴포넌트를 고려해야 하는 경우가 있다.
-- 아래의 예시가 특수한 경우이다. 이는 React 에서 합성을 통해 해결 할 수 있다.
-- 더 구체적인 컴포넌트가 일반적인 컴포넌트를 렌더링하고, props 를 통해 내용을 구성
+- 때로는 어떤 컴포넌트의 "특수한 경우"인 컴포넌트를 고려해야 하는 경우가 있다.
+- 이는 React 에서 합성을 통해 해결 할 수 있다.
+- 더 구체적인 컴포넌트가 일반적인 컴포넌트를 렌더링하고, props 를 통해 내용을 구성한다.
+- 아래의 예시가 특수한 경우다. 
+- WelcomeDialog 는 Dialog 의 "특수한 경우" 라고 할 수 다.
+
 ```jsx
 function FancyBorder(props) {
   return (
@@ -1603,6 +1617,7 @@ ReactDOM.render(
   document.getElementById('root')
 );
 ```
+
 - 합성은 아래의 코드 처럼 클래스로 정의된 컴포넌트에서도 동일하게 적용된다.
 ```jsx
 function FancyBorder(props) {
@@ -1670,11 +1685,12 @@ class SignUpDialog extends React.Component {
 }
 ```
 
-그렇다면 상속은???
+그렇다면 상속은
 - Facebook 에서는 수천 개의 React 컴포넌트를 사용하지만, 컴포넌트를 상속 계층 구조로 작성을 권장할만한 사례를 아직 찾지 못했다.
 - props 와 합성은 명시적이고 안전한 방법으로 컴포넌트의 모양과 동작을 커스터마이징하는데 필요한 모든 유연성을 제공한다.
 
 # 12. React 로 사고하기
+
 React 의 가장 멋진 점 중 하나는 앱을 설계하는 방식
 
 해당 내용을 통해 React 로 상품들을 검색할 수 있는 데이터 테이블을 만드는 과정을 진행
@@ -1691,7 +1707,7 @@ React 의 가장 멋진 점 중 하나는 앱을 설계하는 방식
 ];
 ```
 
-1. 단계: UI 를 컴포넌트 계층 구조로 나누기
+1단계: UI 를 컴포넌트 계층 구조로 나누기
 - 모든 컴포넌트(와 하위 컴포넌트)의 주변에 박스를 그리고 그 각각에 이름에 붙이는 것
 - 어떤 것이 컴포넌트가 되어야 할까?
   - 우리가 새로운 함수나 객체를 만들 때처럼 만들면됨
@@ -1704,43 +1720,54 @@ React 의 가장 멋진 점 중 하나는 앱을 설계하는 방식
   - ProductCategoryRow Component: 각 카테고리의 헤더를 보여줌
   - ProductRow Component: 각각의 제품에 해당하는 행을 보여줌
   ```
-  // 아래와 같은 계층 구조의 자식으로 나타낼 것이다.
-  FilterableProductTable
-    SearchBar
-    ProductTable
-      ProductCategoryRow
-      ProductRow
+  // 아래와 같은 계층 구조로 자식으로 나타낼 것이다.
+  +--FilterableProductTable-------+
+  |  +--SearchBar--+              |
+  |  |             |              |
+  |  +-------------+              |
+  |                               |
+  |  +--ProductTable------------+ |
+  |  |  +--ProductCategoryRow-+ | |
+  |  |  |                     | | |
+  |  |  +---------------------+ | |
+  |  |  +--ProductRow--+        | |
+  |  |  |              |        | |
+  |  |  +--------------+        | |
+  |  +--------------------------+ |
+  +-------------------------------+
   ```
-2. React 로 정적인 버전 만들기
+
+2단계: React 로 정적인 버전 만들기
 - 일단 가장 쉬운 방법은 데이터 모델을 가지고 UI 를 렌더링은 되지만 아무 동작도 없는 버전을 만들어 보는 것이다.
-- 정적 버전을 만드는 것은 생각은 적게 필요하지만 타이핑은 많이 필요로 하며, 상호 작용을 만드는 것은 생각은 많이 해야 하지만 타이핑은 적게 필요하다.
+- 정적 버전을 만드는 것은 생각은 적게 필요하지만 타이핑은 많이 필요 하며, 상호 작용을 만드는 것은 생각은 많이 해야 하지만 타이핑은 적게 필요하다.
 - 정적 버전을 만들기 위해 state 를 사용하지말라, state 는 오직 상호 작용을 위해, 즉 시간이 지남에 따라 데이터가 바뀌는 것에 사용
 - 앱을 만들때는 하향식(top down) 또는 상향식(bottom-up) 으로 만들 수 있다.
-- 보통은 하향식으로 만드는 게 쉽지만, 프로젝트가 커지면 상향식으로 만들고 테스트를 작성하면서 개발하기가 더 쉽다.
+- 상황에 따라 다르지만, 규모가 작은 경우 하향식으로 만드는게 쉽다.
+- 프로젝트 규모가 커지면 테스트를 작성하며 상향식으로 개발하는게 더 쉽다.
 - 해당 단계가 끝나면 데이터 렌더링을 위해 만들어진 재사용 가능한 컴포넌트들의 라이브러리를 가지게 된다.
-- React 의 단방향 데이터 흐름(one-way data flow) (또는 단방향 바인딩(one-way binding)는 모든 것을 모듈화 하고 빠르게 만들어 준다.
+- React 의 단방향 데이터 흐름(one-way data flow) (또는 단방향 바인딩(one-way binding))는 모든 것을 모듈화 하고 빠르게 만들어 준다.
 
-3. UI state 에 대한 최소한의 표현 찾아내기
+3단계: UI state 에 대한 최소한의 표현 찾아내기
 - UI 를 상호작용하게 만들려면 기반 데이터 모델을 변경할 수 있는 방법이 있어야 한다. 이를 state 를 통해 변경한다.
 - 애플리케이션을 올바르게 만들기 위해서는 애플리케이션에서 필요로 하는 변경 가능한 state 의 최소 집합을 생각해 보아야한다.
 - 여기서 핵심은 중복 배제 원칙이다.
-  - 애플리케이션이 필요로 하는 가장 최소한의 stateㄹ 를 찾고 이를 통해 나머지 모든 것들이 필요에 따라 그때 그때 계산되도록 만들어야 한다.
+  - 애플리케이션이 필요로 하는 가장 최소한의 state 를 찾고 이를 통해 나머지 모든 것들이 필요에 따라 그때 그때 계산되도록 만들어야 한다.
 - 3가지 질문을 통해 state 가 되어야 하는지 확인할 수 있다.
   - 부모로부터 props 를 통해 전달되는가? 그러면 확실히 state 가 아니다
-  - 시간이 지나도변하지 않나? 그러면 확실히 state 가 아니다.
+  - 시간이 지나도 변하지 않나? 그러면 확실히 state 가 아니다.
   - 컴포넌트 안의 다른 state 나 props 를 가지고 계산 가능? 그렇다면 state 가 아님
 
-4. State 가 어디에 있어야 할 지 찾기
+4단계: state 가 어디에 있어야 할 지 찾기
 - 어떤 컴포넌트가 state 를 변경하거나 소유할지 찾아야 한다.
 - React 는 항상 컴포넌트 계층구조를 따라 아래로 내려가는 단방향 데이터 흐름을 따름
 - 애플리케이션이 가지는 각각의 state에 대해서
   - state 를 기반으로 렌더링하는 모든 컴포넌트를 찾으시오
   - 공통 소유 컴포넌트를 찾으세요
   - 공통 혹은 더 상위에 있는 컴포넌트가 state 를 가져야함
-  - state 를 소유할 적절한 컴포넌트를 찾지 못하였다면, state 를 소유하는 컴포넌트를 하나 만들어서 공통 오너 컴포넌트의 상위 계층에 추가
+  - state 를 소유할 적절한 컴포넌트를 찾지 못했다면, state 를 소유하는 컴포넌트를 하나 만들어서 공통 오너 컴포넌트의 상위 계층에 추가한다.
 
-5. 역방향 데이터 흐름 추가하기
-- React 는 전동적인 양방향 데이터 바인딩(two-way data binding) 과 비교하면 더많은 타이핑을 필요로 하지만 데이터 흐름을 명시적으로 보이게 만들어서 프로그램이 어떻게 동작하는지 파악할 수 있게 도와줌
+5단계: 역방향 데이터 흐름 추가하기
+- React 는 전통적인 양방향 데이터 바인딩(two-way data binding) 과 비교하면 더 많은 타이핑을 필요로 하지만 데이터 흐름을 명시적으로 보이게 만들어서 프로그램이 어떻게 동작하는지 파악할 수 있게 도와줌
 ```jsx
 class ProductCategoryRow extends React.Component {
   render() {
@@ -1919,19 +1946,20 @@ ReactDOM.render(
 - https://ko.reactjs.org/docs/faq-state.html#what-is-the-difference-between-state-and-props
 
 # 추가
-React 에서는 이벤트가 처리되는 방식, 시간에 따라 state 가 변하는 방식, 화면에 표시하기 위해 데이터가 준비되는 방식 등 렌더링 로직이 본질적으로 다른 UI 로직과 연결된다.
+- React 에서는 이벤트가 처리되는 방식, 시간에 따라 state 가 변하는 방식, 화면에 표시하기 위해 데이터가 준비되는 방식 등 렌더링 로직이 본질적으로 다른 UI 로직과 연결된다.
 
-React 는 별도의 파일에 마크업과 로직을 넣어 기술을 인위적으로 분리하는 대신, 둘 다 포함하는 컴포넌트라고 부르는 느슨하게 연결된 유닛으로 관심사를 분리한다.
+- React 는 별도의 파일에 마크업과 로직을 넣어 기술을 인위적으로 분리하는 대신, 둘 다 포함하는 컴포넌트라고 부르는 느슨하게 연결된 유닛으로 관심사를 분리한다.
 
-엘리먼트는 컴포넌트의 구성요소이다.
+- 엘리먼트는 컴포넌트의 구성요소이다.
 
-개념적으로 컴포넌트는 JavaScript 함수와 유사하다. props 라고 하는 임의의 입력을 받은 후, 화면에 어떻게 표시되는지를 기술하는 React  엘리먼틀 반환
+- 개념적으로 컴포넌트는 JavaScript 함수와 유사하다. 
 
-컴포넌트의 이름은 항상 대문자로 시작한다.
+- props 라고 하는 임의의 입력을 받은 후, 화면에 어떻게 표시되는지를 기술하는 React 엘리먼틀 반환한다.
 
-컴포넌트가 원시 타입의 값, React 엘리먼트 혹은 함수 등 어떠한 props 도 받을 수 있다는 것을 기억하세요.
+- 컴포넌트의 이름은 항상 대문자로 시작한다.
 
-UI 가 아닌 기능을 여러 컴포넌트에서 재사용하기를 원한다면, 별도의 JS 모듈로 분리하는 것이 좋으며, 컴포넌트에서 해당 함수, 객체, 클래스 등을 상속 없이 import 하여 사용할 수 있다.
+- 컴포넌트가 원시 타입의 값, React 엘리먼트 혹은 함수 등 어떠한 props 도 받을 수 있다는 것을 기억하세요.
 
-# 참고
-https://gist.github.com/gaearon/683e676101005de0add59e8bb345340c
+- UI 가 아닌 기능을 여러 컴포넌트에서 재사용하기를 원한다면, 별도의 JS 모듈로 분리하는 것이 좋으며, 컴포넌트에서 해당 함수, 객체, 클래스 등을 상속 없이 import 하여 사용할 수 있다.
+
+- 클래스 컴포넌트는 항상 props 로 기본 constructor 를 호출해야 한다.
