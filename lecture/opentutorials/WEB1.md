@@ -4,7 +4,7 @@ https://opentutorials.org/course/3084
 # WEB1 - 1.수업소개
 https://www.youtube.com/watch?v=tZooW6PritE&feature=youtu.be
 
-여향을 시작하기 앞서서 한가지 준비가 필요하다. 이는 우리들의 상상력이다.
+여행을 시작하기 앞서서 한가지 준비가 필요하다. 이는 우리들의 상상력이다.
 - 나의 문제를 코딩으로 해결하려는 엔지니어라고 상상
 
 # WEB1 - 2.프로젝트의 동기
@@ -279,10 +279,85 @@ index.html
 # WEB1 - 16. 원시웹
 https://www.youtube.com/watch?v=pYOEy_mAMpI&list=PLuHgQVnccGMDZP7FJ_ZsUrdCGH68ppvPb&index=16
 
-웹의 역사
+## 웹의 역사
 - Internet vs WEB
+  - 인터넷이 도시라면, 웹은 도시 위에 있는 건물이다.
+  - 즉, 웹은 인터넷의 부분 집합이다.
+
+1960 년, 인터넷의 탄생
+1990 년, 웹의 시작
+- 스위스, 팀 버너스 리
+- http://info.cern.ch
+
+# WEB1 - 17. 인터넷을 여는 열쇠 : 서버와 클라이언트
+https://www.youtube.com/watch?v=yBPyzaccbkc&list=PLuHgQVnccGMDZP7FJ_ZsUrdCGH68ppvPb&index=17
+
+```
+  +---------------+    ------------>    +---------------+
+  |  Web Browser  |       request       |  Web Browser  |
+  |               |    <------------    |               |
+  +---------------+       response      +---------------+ 
+       Client                                Server    
+
+```
+- 웹 브라우저가 설치된 컴퓨터와 웹 서버가 설치된 컴퓨터가 서로 정보를 주고 받음
+- 요청하는 컴퓨터를 클라이언트
+- 응답하는 컴퓨터를 서버
 
 
-# 끝난 후 검색 후 정리
-html 이란?
-태그란
+# WEB1 - 18. 웹호스팅 : github page
+https://www.youtube.com/watch?v=n1wvs7xuUYk&list=PLuHgQVnccGMDZP7FJ_ZsUrdCGH68ppvPb&index=18
+
+인터넷에 연결된 컴퓨터 하나 하나를 호스트
+
+이런 컴퓨터를 빌려주는 사업을 호스팅
+
+웹서버를 전문적으로 빌려주는 비즈니스를 웹호스팅 업체
+
+# WEB1 - 19. 웹서버 운영하기
+https://www.youtube.com/watch?v=ThlyDSM0FNU&list=PLuHgQVnccGMDZP7FJ_ZsUrdCGH68ppvPb&index=19
+
+대표적인 제품
+- Apache
+- IIS
+- Nginx
+
+## 웹 서버 설치
+bitnami 를 사용
+
+## 웹 서버와 http
+`http`는 HyperText Transfer Protocol의 약자
+- 웹 페이지를 전송하기 위해서 만든 통신 규약
+
+## 웹 서버와 웹 브라우저의 통신
+
+# WEB1 - 20. 수업을 마치며
+https://www.youtube.com/watch?v=bTSDDyuMuUo&list=PLuHgQVnccGMDZP7FJ_ZsUrdCGH68ppvPb&index=27
+
+- 기술은 본질과 혁신으로 구분된다 생각한다.
+- 학습을 교양과 직업으로 분리된다 생각한다.
+
+https://www.youtube.com/watch?v=JUNFoER12kk&list=PLuHgQVnccGMDZP7FJ_ZsUrdCGH68ppvPb&index=28
+
+- 복잡함
+  - 눈에 보이지 않는 복잡성은 공부한 것을 사용하려고 했을 때 무엇을 햬야할지 막막하게 하는 주범
+  - 인류는 눈에 보이는 단순함을 조작해서 눈에 보이지 않는 엄청나게 복잡한 것을 만들어내는 위대한 존재
+
+https://www.youtube.com/watch?v=WD-LFlMi6iA&list=PLuHgQVnccGMDZP7FJ_ZsUrdCGH68ppvPb&index=29
+
+# WEB1 부록 - 코드의 힘
+https://www.youtube.com/watch?v=YVxCFGv9Eqk&list=PLuHgQVnccGMDZP7FJ_ZsUrdCGH68ppvPb&index=30
+
+## 동영상 삽입
+iframe
+```
+<iframe width="560" height="315" src="https://www.youtube.com/embed/7T7r_oSp0SE" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+```
+
+## 다양한 기능 추가
+댓글, 채팅, 분석 등 다양한 기능들
+- 직접 기능을 구현할 수 있다.
+- 남이 만든 기능을 가지고 와서 사용할 수 있다.
+  - disqus
+  - tawk
+    - https://www.tawk.to/
