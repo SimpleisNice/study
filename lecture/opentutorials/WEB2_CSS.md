@@ -3,7 +3,6 @@ https://opentutorials.org/course/3086
 
 CSS
 - Cascading Style Sheets
-- 
 
 # WEB2 CSS - 1. 수업 소개
 https://www.youtube.com/watch?v=Ok0bBJPtgJI
@@ -199,7 +198,7 @@ https://www.youtube.com/watch?v=MLjCVUspcDo
 </html>
 ```
 
-HTML 의 여러 태그들은, 태그의 성격과 일반적인 쓰임에 따라서 
+HTML 의 여러 태그들은, 태그의 성격과 일반적인 쓰임에 따라
 - 화면의 전체 사용
   - block level element
 - 자신의 부피만을 사용
