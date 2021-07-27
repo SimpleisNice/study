@@ -76,6 +76,52 @@ npm install -g typescript
 - local install 은 아래와 같다.
   - npm install typescript --save-dev
 
+
+### 1. TypeScript 파일 생성 및 컴파일
+```ts
+// greeter.ts
+function greeter(person: string) {
+  return 'Hello, ' + person;
+}
+
+let user = 'Jane User';
+
+document.body.textContent = greeter(user);
+```
+
+커맨드 라인에서 아래와 같이 TypeScript 컴파일러를 실행
+
+```
+tsc greeter.ts
+```
+
+
+### 3. 타입 표기
+TypeScript 의 타입 표기는 함수나 변수의 의도된 계약을 기록하는 간단한 방법
+
+
+### 4. 인터페이스 
+TypeScript에서, 내부 구조가 호환되는 두 타입은 서로 호환 된다.
+
+그래서 명시적인 implements 절 없이, 인터페이스가 요구하는 형태를 사용하는 것만으로도 인터페이스를 구현할 수 있다.
+```ts
+interface IPerson {
+  firstName: string;
+  lastName: string;
+}
+
+function greeter(person: Person) {
+  return 'Hello, ' + person.firstName + ' ' + person.lastName;
+}
+
+let uesr = { firstName: 'Jane', lastName: 'User' };
+
+document.body.textContent = greeter(user)
+```
+
+### 5. 클래스
+TypeScript는 클래스 기반 객체 지향 프로그래밍 지원과 같은 JavaScript의 새로운 기능을 지원
+
 # 참고
 https://typescript-kr.github.io/
 
