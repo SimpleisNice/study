@@ -51,3 +51,8 @@ let personName1 = `person1 = ${(<{name: string}> person).name}`;
 let personName2 = `person2 = ${(person as {name: string}).name}`;
 
 console.log(personName1, personName2);
+
+
+type ageToString = (number) => string;
+let f: ageToString = function(age: number): string { return ''}
+let g: ageToString = function(age: number): number { return 0 }

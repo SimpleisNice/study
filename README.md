@@ -13,5 +13,7 @@ Design Pattern
 
 Express
 
+Nuxt
+
 ## 참고
 [토스 2021 slash](https://toss.im/slash-21)
