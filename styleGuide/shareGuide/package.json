@@ -1,7 +1,0 @@
-{
-  "name": "eslint-config-share-test",
-  "peerDependencies": {
-    "eslint": ">=6",
-    "eslint-plugin-import": "^2.18.2"
-  }
-}
