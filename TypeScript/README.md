@@ -101,7 +101,7 @@ npm run build
 
 
 ## 패키지 설치 명령 옵션
-`-- save` 또는 `-S` 
+`--save` 또는 `-S` 
 - 프로젝트를 실행할 때 필요한 패키지로 설치
 - 패키지 정보가 package.json 파일의 dependencies 항목에 등록
 
@@ -141,3 +141,173 @@ node 나 ts-node 로 소스 파일을 실행하려면 ts-node ./src/index.ts 명
 보통은 코드 관리와 유지 보수를 편리하게 하려고 모듈마다 고유한 기능을 구현하는 방식으로 소스코드를 분할 한다.
 
 이러한 작업을 모듈화(modulization) 라고 한다.
+
+## index.ts 파일을 분리해 모듈화 진행
+
+1 - 모듈화 하기전의 src/index.ts
+```ts
+// src/index.ts
+let MAX_AGE = 100;
+
+interface IPerson {
+  name: string;
+  age: number;
+}
+
+class Person implements IPerson {
+  constructor(public name: string, public age: number) {}
+}
+
+function makeRandomNumber(max: number = MAX_AGE): number {
+  return Math.ceil((Math.random() * max));
+}
+
+const makePerson = (name: string, age: number = makeRandomNumber()) => ({ name, age });
+
+const testMakePerson = (): void => {
+  let jane: IPerson = makePerson('Jane');
+  let jack: IPerson = makePerson('Jack');
+
+  console.log(jane, jack);
+}
+
+testMakePerson();
+```
+
+2 - src/index.ts 를 아래의 형태로 분리
+- src/index.tsm
+- src/utils/makeRandomNumber.ts
+- src/person/IPerson.ts
+- src/person/Person.ts
+```ts
+// src/index.ts
+import IPerson from './person/IPerson';
+import Person, { makePerson } from './person/Person'
+
+const testMakePerson = (): void => {
+  let jane: IPerson = makePerson('Jane');
+  let jack: IPerson = makePerson('Jack');
+
+  console.log(jane, jack);
+}
+
+testMakePerson();
+```
+```ts
+// src/utils/makeRandomNumber.ts
+let MAX_AGE = 100;
+
+export function makeRandomNumber(max: number = MAX_AGE): number {
+  return Math.ceil((Math.random() * max));
+}
+```
+```ts
+// src/person/IPerson.ts
+export default interface IPerson {
+  name: string;
+  age: number;
+}
+```
+```ts
+// src/person/Person.ts
+import * as U from '../utils/makeRandomNumber';
+import IPerson from './IPerson';
+
+export default class Person implements IPerson {
+  constructor(public name: string, public age: number = U.makeRandomNumber()) {}
+}
+
+export const makePerson = (name: string, age: number = U.makeRandomNumber()): IPerson => ( {name, age} )
+```
+
+<br>
+
+## 외부 패키지를 사용할 때 import 문
+```
+npm i -S chance ramda
+npm i -D @types/chance @types/ramda
+```
+
+
+```ts
+// src/index.ts
+import IPerson from './person/IPerson';
+import Person, { makePerson } from './person/Person';
+import Chance from 'chance';
+import * as R from 'ramda';
+
+const chance = new Chance();
+
+let persons: IPerson[] = R.range(0, 2)
+  .map((n: number) => new Person(chance.name(), chance.age()));
+console.log(persons);
+```
+
+<br><br>
+
+# tsconfig.json 파일 살펴보기
+```json
+{
+  "compilerOptions": {
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "target": "es5",
+    "baseUrl": ".",
+    "outDir": "dist",
+    "paths": { "*": ["node_modules/*"]},
+    "esModuleInterop": true,
+    "sourceMap": true,
+    "downlevelIteration": true,
+    "forceConsistentCasingInFileNames": true,
+    "strict": true,
+    "noImplicitAny": false,
+    "skipLibCheck": true
+  },
+  "include": ["src/**/*"]   /* 대상 파일 목록을 나타냄 */
+}
+```
+compilerOptions: tsc 명령 형식에서 옵션을 나타냄
+```
+"module": "commonjs",
+- 플랫폼에 맞는 모듈 방식으로 컴파일하려는 목적으로 설정
+  - web browser: amd
+  - nodejs: commonjs
+"moduleResolution": "node",
+- "module" 키값에 따라 다음과 같이 설정한다
+  - amd 인 경우: classic
+  - commonjs 인 경우: node
+"target": "es5",
+- 트랜스파일할 대상 자바스크립트 버전을 설정
+"baseUrl": ".",
+"outDir": "dist",
+- baseUrl 과 outDir 키에는 트랜스파일된 ES5 자바스크립트 파일을 저장하는 디렉터리를 설정한다.
+- tsc 는 tsconfig.json 파일이 있는 디렉터리에서 실행됨
+- 따라서 현재 디렉터리를 의미하는 "." 로 baseUrl 키값을 설정하는 것이 보통
+- outDif 키는 baseUrl 설정값을 기준으로 했을 때 하위 디렉터리의 이름
+- 앞서 이 키는 dist 라는 값을 설정했으므로 빌드된 결과가 dist 디렉터리에 만들어짐
+"paths": { "*": ["node_modules/*"]},
+- 소스 파일의 import 문에서 from 부분을 해석할 때 찾아야 하는 디렉터리를 설정
+- import 문이 찾아야 하는 소스가 외부 패키지이면
+- node_modules 디렉터리에서 찾아야 하므로 키값에 node_modules/* 도 포함
+"esModuleInterop": true,
+- 오픈소스 자바스크립트 라이브러리 중에서 웹 브라우저에서 동작한다는 가정으로 만들어 진것이 있다.
+- 이들은 CommonJS 방식으로 동작하는 타입스크립트 코드에 혼란을 술 수 있다.
+- 이러한 라이브러리를 동작시키기 위해서는 해당 키값을 true 로 설정해야 한다.
+"sourceMap": true,
+- 키값이 true 이면 트랜스파일 디렉터리에는 .js 파일 이외에도 .js.map 파일이 만들어진다.
+- 이 소스맵 파일은 변환된 자바스크립트 코드가 타입스크립트 코드의 어디에 해당하는지를 알려준다.
+- 주로 디버깅할 때 사용
+"downlevelIteration": true,
+- 생성기라는 타입스크립트 구문이 있는데, 이는 책의 6장에서 설명
+- 이 생성기 구문이 정상적으로 동작하려면 키값이 반드시 true 로 설정해야 한다.
+"noImplicitAny": false,
+- 키값이 true 인 경우, 타입을 명시하지 않으면 오류 메시지를 통해 개발자에게 문제를 알려준다.
+"forceConsistentCasingInFileNames": true,
+"strict": true,
+"skipLibCheck": true
+```
+
+
+include 항목
+- 대상 파일 목록을 나타냄
+- `["src/**/*"]` 는 src 디렉터리는 물론 src 하위 디렉터리에 있는 모든 파일을 컴파일 대상으로 포함한다는 의미
