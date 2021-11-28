@@ -8,7 +8,7 @@ Open Systems Interconnection Reference Model
 ## 목적
 프로토콜을 기능별로 나눈것
 
-각 계층은 하위 계층의 기능만을 이요하고, 상위 계층에게 기능을 제공한다.
+각 계층은 하위 계층의 기능만을 이용하고, 상위 계층에게 기능을 제공한다.
 
 "프로토콜 스택" 혹은 "스택"은 이러한 계층들로 구성되는 프로토콜 시스템이 구현된 시스템을 가리키는데,
 
@@ -27,6 +27,8 @@ Open Systems Interconnection Reference Model
 - 네트워크의 높은 수준의 기능은 논리 데이터 구조를 기초로 하는 필수 계층이다.
 - 다양한 특징의 하드웨어 기술이 접목되어 있기에 OSI 아키텍처에서 가장 복잡한 계층으로 간주된다.
 
+<br>
+
 ### 계층 2: 데이터 링크 계층
 ```
 프레임에 주소부여(MAC - 물리적 주소)
@@ -42,7 +44,7 @@ Open Systems Interconnection Reference Model
   - 이 외에도 HDLC, ADCCP 같은 포인트 투 포인트 프로토콜이나 패킷 스위칭 네트워크나, LLC, ALOHA 같은 근거리 네트워크용 프로토콜이 있다.
 - 네트워크 브릿지나 스위치 등이 계층에서 동작하며 직접 이어진 곳에만 연결할 수 있다.
 
-<br><br>
+<br>
 
 ### 계층 3: 네트워크 계층
 ```
@@ -60,7 +62,7 @@ Open Systems Interconnection Reference Model
 - 서브네트의 최상위 계층으로 경로를 설정하고, 청구 정보를 관리한다.
 - 개방형 시스템들의 사이에서 네트워크 연결을 설정 유지, 해제하는 기능을 부여하고, 전송 계층 사이에 네트워크 서비스 데이터 유닛(NSDU) 을 교환하는 기능을 제공한다.
 
-<br><br>
+<br>
 
 ### 계층 4: 전송 계층
 ```
@@ -74,7 +76,7 @@ Open Systems Interconnection Reference Model
   - 가장 잘 알려진 전송 계층의 예는 TCP 이다.
 - 종단간(end-to-end) 통신을 다루는 최하위 계층으로 종단간 신뢰성 있고 효율적인 데이터를 전송하며, 기능은 오류검출 및 복구와 흐름제어, 중복검사 등을 수행한다.
 
-<br><br>
+<br>
 
 ### 계층 5: 세션 계층
 ```
@@ -86,11 +88,11 @@ Open Systems Interconnection Reference Model
 - 이 계층은 TCP/IP 세션을 만들고 없애는 책임을 진다.
 - 통신하는 사용자들을 동기화하고 오류복구 명령들을 일괄적으로 다룬다
 
-<br><br>
+<br>
 
 ### 계층 6: 표현 계층
 ```
-사용자의 명령어를 완성및 결과 표현.
+사용자의 명령어를 완성 및 결과 표현.
 포장/압축/암호화
 ```
 - Presentation Layer
@@ -106,7 +108,7 @@ Open Systems Interconnection Reference Model
 ```
 - Application Layer
 - 응용 프로세스와 직접 관계하여 일반적인 응용 서비스를 수행한다
-- 일반적인 응용 서비스는 관련된 응용 프로세스들 사이의 저노한을 제공한다
+- 일반적인 응용 서비스는 관련된 응용 프로세스들 사이의 전환을 제공한다
 - 응용 서비스의 예로, 가상 터미널(Ex, 텔넷), "Job transfer and Manipulation protocol" (JTM, 표준 ISO/IEC 8832) 등이 있다.
 - HTTP, SMTP, SNMP, FTP, 텔넷, NFS, NTP
 <br><br>
