@@ -523,3 +523,172 @@ let obj: Object = { name: 'Jack' }
 let name1 = (<INameable>obj).name
 let name2 = (obj as INameable).name
 ```
+
+<br><br>
+
+# 함수와 메서드
+
+<br>
+
+## 함수 선언문
+```ts
+/**
+  function 함수이름(매개변수1: 타입1, 매개변수2: 타입2): 반환값타입 {
+    함수몸통
+  }
+*/
+
+// parameter
+function add(a: number, b: number): number {
+  return a + b;
+}
+
+// argument
+let result = add(1, 2);
+```
+
+매개변수와 인수,인자
+- 일반적으로 parameter 는 매개변수라고 하고, argument 는 인수 혹은 인자라고 한다.
+- 매개변수는 함수 선언문에서 함수 이름 뒤 괄호 안에 선언하는 변수
+- 인수는 함수를 호출할 때 전달하는 값
+
+
+함수 시그처(function signature)
+```ts
+/**
+  (매개변수1 타입, 매개변수2 타입[,...]) => 반환값타입
+*/
+let printMe: (string, number) => void = function(name: string, age: number): void {}
+```
+- 함수의 타입을 함수 시그니처라고 한다.
+
+
+type 키워드로 타입 별칭 만들기
+```ts
+/**
+  type 새로운타입 = 기존 타입
+*/
+type stringNumberFunc = (string, number?) => void;
+let f: stringNumberFunc = function(a: string, b: number): void {}
+let g: stringNumberFunc = function(c: string, d: number): void {}
+
+```
+- 타입스크립트는 type이라는 키워드를 제공
+- type 키워드는 기존에 존재하는 타입을 단순히 이름만 바꿔서 사용할 수 있게 해준다.
+- 이러한 기는을 타입별칭(type alias) 라고 한다.
+- 위와 같이 함수 시그니처를 명시하면 다음 화면에서 보는 것처럼 매개변수의 개수나 타입, 반환 타입이 다른 함수를 선언하는 잘못을 미연에 방지할 수 있다.
+
+<br>
+
+## 함수 표현식(function expression)
+```ts
+// 함수 표현식
+function(a, b) { return a + b; }
+```
+
+일등 함수(first-class function)
+- 프로그래밍 언어가 일등 함수 기능을 제공하면 함수형 프로그래밍 언어라고 한다.
+- 일등 함수란, 함수와 변수를 구분(혹은 차별)하지 않는다는 의미
+
+
+표현식(expression)
+- 리터럴, 연산자, 변수, 함수호출등이 복합적으로 구성된 코드 형태를 의미
+
+계산법
+- 컴파일러는 표현식을 만나면 계산법(evaluation)을 적용해 어떤 값을 만든다.
+- 계산법에는 조급한 계산법(eager evaluation)과 느긋한 계산법(lazy evaluation) 두가지가 있다.
+  - 컴파일러는 1 + 2 라는 표현식을 만나면 조급한 계산법을 적용해 3이라는 값을 만든다.
+  - 컴파일러는 function(a,b) { return a + b } 라는 함수 표현식을 만나면 심벌 a 와 b가 어떤 값인지 알 수 없어서 느긋한 계산법을 적용해 계산을 보류한다.
+  - 컴파일러는 함수 호출문을 만나면 지금까지 미뤘던 함수 표현식에 조급한 계산법을 적용해 함수 표현식을 값으로 바꿈
+
+익명 함수(anonymous function)
+- 함수 표현식은 사실 대부분 언어에서 언급되는 익명함수의 다른 표현
+
+
+## 화살표 함수와 표현식 문
+```ts
+/**
+  const 함수이름 = (매개변수1: 타입1, 매개변수2: 타입2, [, ...]): 반환타입 => 함수몸통
+*/
+
+// 실행문 방식 몸통
+const arrow1 = (a: number, b: number): number => { return a + b; }
+// 표현식 문 방식 몸통
+const arrow2 = (a: number, b: number): number => a + b;
+```
+- 중괄호 사용 여부에 따라 타입스크립트 문법이 동작하는 방식이 실행문 방식과 표현식 문 방식으로 달라짐
+
+실행문과 표현식 문
+- 실행문 지향 언어(execution-oriented language)
+  - 프로그래밍 언어에서 실행문은 CPU 에서 실행되는 코드를 의미
+  - 실행문은 CPU 에서 실행만 될 뿐 결과를 알려주지 않는다.
+  - 실행문이 실행된 결과를 알려면 반드시 return 키워드를 사용해야 한다.
+- 표현식 지향 언어(expression-oriented language)
+  - CPU 에서 실행된 결과를 굳이 return 키워드를 사용하지 않아도 알려줌
+
+## 일등 함수 살펴보기
+일등 함수는 프로그래밍 언어가 제공하는 기능
+
+일등 함수 기능을 제공하는 언어에서 함수는 함수 표현식이라는 일종의 값이다.
+
+따라서 변수에 담을 수 있으며, 이 말은 함수 표현식을 매개변수로 받을 수 있다는 것을 의미한다.
+
+이처럼 매개변수 형태로 동작하는 함수를 콜백 함수(callback function) 라고 한다.
+
+<br>
+
+고차 함수와 클로저, 그리고 부분 함수
+```ts
+const add = (a: number): (number) => number => (b: number): number => a + b;
+const result = add(1)(2);
+console.log(result);
+
+// 위의 함수는 아래와 같다.
+type NumberToNumberFunc = (number) => number;
+
+const add = (a: number): NumberToNumberFunc => {
+  const _add: NumberToNumberFunc = (b: number): number => {
+    return a + b;   // 글로저
+  }
+  return _add;
+}
+
+```
+- 고차 함수(high-order function)는 또 다른 함수를 반환하는 함수를 말함
+- 함수형 언어에서 함수는 단순히 함수 표현식이라는 값이므로 다른 함수를 반환할 수 있다.
+
+## 함수 구현 기법
+매개 변수 기본값 지정하기
+
+객체 생성시 값 부분을 생략할 수 있는 타입 스크립트 구문
+
+객체를 반환하는 화살표 함수 만들기
+```ts
+// 소괄호가 없는 경우, 복합 실행문으로 해석한다.
+export const makePerson = (name: string, age: number = 10): Person => ({ name, age })
+```
+
+매개변수에 비구조화 할당문 사용하기
+```ts
+type Person = { name: string, age: number }
+const printPerson = ({ name, age }: Person): void =>  console.log(`name: ${name}, age: ${age}`);
+```
+
+색인 키와 값으로 객체 만들기
+```ts
+const makeObj = (key, value) => ({ [key]: value })
+
+console.log(makeObj('name', 'Jack'))      // { name: 'Jack' }
+console.log(makeObj('firstName', 'Jane')) // { firstName: 'Jane' }
+
+/**
+  타입스크립트에서는 {[key]: value} 형태의 타입을 '색인 가능 타입' 이라고 하며
+  다음과 같은 형태로 key 와 value 의 타입을 명시한다.
+*/
+type KeyType = {
+  [key: string]: string;
+}
+export const makeObject = (key: string, value: string): KeyValue => ({ [key]: value })
+console.log(makeObject('name', 'Jack'))      // { name: 'Jack' }
+console.log(makeObject('firstName', 'Jane')) // { firstName: 'Jane' }
+```
