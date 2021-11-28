@@ -126,9 +126,9 @@ npm run build
 
 
 ## 시작 소스 파일 명을 index 로 짓는 이유
-node 나 ts-node 로 소스 파일을 실행하려면 ts-node ./src/index.ts 명령을 사용한다.
+node 나 ts-node 로 소스 파일을 실행하려면 `ts-node ./src/index.ts` 명령을 사용한다.
 
-하지만 소스 파일명이 index 이면 파일명을 생략하고 단순히 ts-node ./src 로 실행할 수 있다
+하지만 소스 파일명이 index 이면 파일명을 생략하고 단순히 `ts-node ./src` 로 실행할 수 있다
 
 이 때문에 프로젝트의 시작 함수(엔트리 함수)가 있는 소스 파일명은 보통 index 로 짓는다.
 <br><br><br><br>
@@ -142,7 +142,10 @@ node 나 ts-node 로 소스 파일을 실행하려면 ts-node ./src/index.ts 명
 
 이러한 작업을 모듈화(modulization) 라고 한다.
 
+<br>
+
 ## index.ts 파일을 분리해 모듈화 진행
+<br>
 
 1 - 모듈화 하기전의 src/index.ts
 ```ts
@@ -174,8 +177,10 @@ const testMakePerson = (): void => {
 testMakePerson();
 ```
 
+<br>
+
 2 - src/index.ts 를 아래의 형태로 분리
-- src/index.tsm
+- src/index.ts
 - src/utils/makeRandomNumber.ts
 - src/person/IPerson.ts
 - src/person/Person.ts
@@ -240,6 +245,7 @@ const chance = new Chance();
 
 let persons: IPerson[] = R.range(0, 2)
   .map((n: number) => new Person(chance.name(), chance.age()));
+
 console.log(persons);
 ```
 
@@ -266,7 +272,9 @@ console.log(persons);
   "include": ["src/**/*"]   /* 대상 파일 목록을 나타냄 */
 }
 ```
-compilerOptions: tsc 명령 형식에서 옵션을 나타냄
+<br>
+
+`compilerOptions: tsc` 명령 형식에서 옵션을 나타냄
 ```
 "module": "commonjs",
 - 플랫폼에 맞는 모듈 방식으로 컴파일하려는 목적으로 설정
@@ -283,7 +291,7 @@ compilerOptions: tsc 명령 형식에서 옵션을 나타냄
 - baseUrl 과 outDir 키에는 트랜스파일된 ES5 자바스크립트 파일을 저장하는 디렉터리를 설정한다.
 - tsc 는 tsconfig.json 파일이 있는 디렉터리에서 실행됨
 - 따라서 현재 디렉터리를 의미하는 "." 로 baseUrl 키값을 설정하는 것이 보통
-- outDif 키는 baseUrl 설정값을 기준으로 했을 때 하위 디렉터리의 이름
+- outDir 키는 baseUrl 설정값을 기준으로 했을 때 하위 디렉터리의 이름
 - 앞서 이 키는 dist 라는 값을 설정했으므로 빌드된 결과가 dist 디렉터리에 만들어짐
 "paths": { "*": ["node_modules/*"]},
 - 소스 파일의 import 문에서 from 부분을 해석할 때 찾아야 하는 디렉터리를 설정
@@ -311,3 +319,207 @@ compilerOptions: tsc 명령 형식에서 옵션을 나타냄
 include 항목
 - 대상 파일 목록을 나타냄
 - `["src/**/*"]` 는 src 디렉터리는 물론 src 하위 디렉터리에 있는 모든 파일을 컴파일 대상으로 포함한다는 의미
+
+<br><br>
+
+# 객체와 타입
+
+|유형|자바스크립트 타입|타입스크립트 타입|
+|---|-------|---|
+|수 타입|Number|number|
+|불리언 타입|Boolean|boolean|
+|문자열 타입|String|string|
+|객체 타입|Object|object|
+
+<br>
+
+### 타입 주석
+타입스크립트는 자바스크립트 변수 선언문을 확장해 다음과 같은 형태로 타입을 명시할 수 있다.
+
+이를 타입 주석(type annotation)이라고 한다.
+
+```ts
+// let 변수이름: 타입 [= 초깃값];
+// const 변수이름: 타입 = 초깃값;
+
+let n: number = 1;
+let b: boolean = false;
+let o: object = {};
+```
+
+### 타입 추론
+타입스크립트는 자바스크립트와 호환성을 위해 타입 주석 부분을 생략할 수 있다.
+
+타입스크립트 컴파일러는 아래와 같은 코드를 만나면 대입 연산자 `=` 오른쪽 값에 따라 변수의 타입을 지정
+
+이를 타입 추론(type inference) 라고 한다.
+
+```ts
+let n = 1;        // n 의 타입을 number 로 판단
+let b = false;    // b 의 타입을 boolean 으로 판단.
+```
+- 컴파일러가 초깃값에 따라 타입을 추론하므로 각 변수는 초깃값에 해당하는 타입으로 지정됨
+- 따라서 이후에 각 변수에는 해당하는 타입의 값만 저장할 수 있다.
+
+### 타입에 관하여
+```
+                  any
+                   │
+  ┌────────────────┴────────────────┐
+  ↓                                 ↓
+number, boolean, string           object
+                                    ↓
+                                  interface, class
+                                  ...
+  │                                 │
+  └────────────────┬────────────────┘
+                   ↓
+                undefined
+```
+any 타입
+- 타입스크립트는 자바스크립트와 호환을 위해 any 라는 이름의 타입을 제공
+- any 는 값의 타입과 무관하게 어떤 종류의 값도 저장할 수 있다.
+
+undefined 타입
+- 타입스크립트에서 undefined 는 타입이기도 하고 값이기도 하다.
+
+object 타입
+- 인터페이스와 클래스의 상위 타입
+- 속성 이름이 다른 객체를 모두 자유롭게 담을 수 있다.
+
+인터페이스 선언문
+```
+interface 인터페이스이름 {
+  속성이름[?]: 속성타입[,...]
+}
+```
+- 타입스크립트는 객체 타입을 정의할 수 있게 하는 interface 키워드를 제공
+- 인터페이스는 객체의 타입을 정의하는 것이 목적이므로 다음처럼 객체를 의미하는 중괄호 {} 로 속성의 이름과 타입을 나열하는 형태로 사용
+- 인터페이스 속성들을 여러 줄로 구현할 때는 세미콜론 또는 줄바꿈만 해도 된다.
+
+```ts
+interface IPerson {
+  name: string;
+  age: number;
+  etc?: boolean   // 선택 속성
+}
+```
+- 선택 속성(optional property): 인터페이스에서 있어도 되고 없어도 되는 형태의 속성
+
+익명 인터페이스 (anonymous interface)
+```ts
+let ai: {
+  name: string;
+  age: number;
+  etc?: boolean;
+} = { name: 'Jack', age: 32 };
+
+function printMe(me: { name: string, age: number, etc?: boolean }): void {
+  console.log(me.etc ? `${me.name} ${me.age} ${me.etc}` : `${me.name} ${me.age} ${me.etc}` );
+}
+
+printMe(ai)
+```
+- interface 키워드도 사용하지 않고 인터페이스의 이름도 없는 인터페이스를 만들 수 있다.
+- 주로 함수를 구현할 때 사용된다.
+
+객체와 클래스
+```ts
+interface IPerson {
+  name: string;
+  age?: number;
+}
+
+abstract class MoreInfo {
+  abstract height: number;
+  constructor(public height: number)
+}
+
+class Person implements IPerson {
+  constructor(public name: string, publi age?: number) {
+
+  }
+}
+
+class Student extends Person {
+  static STUDENT_COUNT: number = 0;
+
+  constructor(public name: string, public age?: number) {
+    super(name, age);
+  }
+}
+
+let jack: Student = new Student('Jack', 32);
+
+Student.STUDNET_COUNT += 1;
+```
+- 클래스 선언문
+- 접근 제한자
+- 생성자
+- 인터 페이스 구현
+  - 인터페이스는 이러한 속성이 있어야 한다는 규약(spec)에 불과할 뿐 물리적으로 해당 속성을 만들지 않는다.
+- 추상 클래스
+  - abstract 키워드를 사용해 추상 클래스를 만들 수 있다.
+  - 추상 클래스는 new 연산자를 적용해 객체를 만들 수 없다.
+- 클래스의 상속
+  - extends 키워드를 사용해 상속 클래스를 만들 수 있다.
+  - 타입스크립트에서는 부모 클래스의 생성자를 super 키워드로 호출할 수 있다.
+- static 속성
+  - 타입스크립트 클래스는 정적인 속성을 가질 수 있다.
+  - `클래스이름.정적속성이름` 형태의 점 표기법을 사용해 값을 얻거나 설정할 수 있다.
+
+객체의 비구조화 할당문
+```ts
+let address: any = {
+  country: 'korea',
+  city: 'Seoul',
+  address1: 'Gangname-gu',
+  address2: 'Sinsa-dong 123-456',
+  address3: '789 street, 2 Floor ABC building',
+}
+
+// rest operator
+const { country, city, ...detail } = address;
+
+// spread operator
+let coord = { ...{x: 0}, ...{y: 0}}
+```
+- destructuring
+  - 변수가 새롭게 만들어지고, 각 값들은 해당하는 초기값으로 할당 받음
+  - 그러므로 비구조화가 아닌 비구조화 할당으로 해석함
+- 잔여 연산(rest operator)
+- 전개 연산자(spread operator)
+
+
+### 타입 변환(type conversion)
+타입이 있는 언어들은 특정 타입의 변숫값을 다른 타입의 값으로 변환할 수 있는 기능을 제공한다.
+
+```ts
+let person: object = { name: 'Jack', age: 32 };
+(<{name: string}>person).name
+```
+
+
+type conversion 과 type casting 그리고 type coercion 의 차이
+- 타입 변환으로 번역되는 세가지 프로그래밍 용어는 type conversion, type casting, type coercion 이 있다.
+- type conversion 은 type casting 과 type coercion 을 모두 포함하는 의미로 사용된다.
+- type casting 은 명시적인 타입 변환(explicit type conversion) 을 의미
+- type coercion 은 암시적 타입 변환(implicit type conversion) 을 의미
+
+
+### 타입 단언(type assertion)
+```ts
+/**
+  타입 단언의 두가지 구문은 서로 형태만 다를 뿐 내용상으로는 같다.
+  (<타입>객체)
+  (객체 as 타입)
+*/
+
+interface INameable {
+  name: string;
+}
+
+let obj: Object = { name: 'Jack' }
+let name1 = (<INameable>obj).name
+let name2 = (obj as INameable).name
+```
