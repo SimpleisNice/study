@@ -1,4 +1,8 @@
 # 1장 리액트 프로젝트 시작하기
+- 1.1 리액트란 무엇인가?
+- 1.2 리액트 개발 환경 직접 구축하기
+
+<br>
 
 ## 1.1 리액트란 무엇인가?
 리액트는 페이스북에서 개발하고 관리하는 UI 라이브러리
@@ -13,6 +17,8 @@
 - 코드에서 순수 함수와 불변 변수를 적극적으로 사용하면 복잡도가 낮아지고, 찾기 힘든 버그가 발생할 확률이 줄어든다.
 - render 함수는 순수 함수로 작성
 - state 불변 변수로 관리 
+
+<br>
 
 ## 1.2 리액트 개발 환경 직접 구축하기
 
@@ -69,19 +75,19 @@ ReactDOM.render(React.createElement(LikeButton), domContainer);
 
 #### createElement 함수 이해하기
 - React.createElement(component, props, …children) => ReactElement
-    - 첫 번째 매개변수 component는 일반적으로 문자열이나 리액트 컴포넌트
-        - 컴포넌트의 인수가 문자열이면 HTML 태그에 해당하는 돔 요소가 생성된다.
-        - Ex) ‘p’ 를 입력하면 HTML p 태그가 생성된다.
-    - 두 번째 매개변수 props는 컴포넌트가 사용하는 데이터를 나타낸다.
-        - 돔 요소의 경우 style, className 등의 데이터가 사용될 수 있다.
-    - 세 번째 매개변수 children은 해당 컴포넌트가 감싸고 있는 내부의 컴포넌트를 가리킨다.
+  - 첫 번째 매개변수 component는 일반적으로 문자열이나 리액트 컴포넌트
+    - 컴포넌트의 인수가 문자열이면 HTML 태그에 해당하는 돔 요소가 생성된다.
+    - Ex) ‘p’ 를 입력하면 HTML p 태그가 생성된다.
+  - 두 번째 매개변수 props는 컴포넌트가 사용하는 데이터를 나타낸다.
+    - 돔 요소의 경우 style, className 등의 데이터가 사용될 수 있다.
+  - 세 번째 매개변수 children은 해당 컴포넌트가 감싸고 있는 내부의 컴포넌트를 가리킨다.
 - createElement 사용법
-    - `<div><p>hello</p><p>world</p></div>`
-        - 일반적인 HTML 코드
-    - `React.createElement(‘div’, null, createElement(‘p’, null, ‘hello’), createElement(‘p’, null, ‘world’));`
-        - 위의 일반적인 HTML 코드를 createElement 함수를 사용해서 작성
-    - 대부분 createElement 를 직접 작성하지는 않는다.
-    - 일반적으로 바벨(babel)의 도움을 받아서 JSX 문법을 사용
+  - `<div><p>hello</p><p>world</p></div>`
+      - 일반적인 HTML 코드
+  - `React.createElement(‘div’, null, createElement(‘p’, null, ‘hello’), createElement(‘p’, null, ‘world’));`
+    - 위의 일반적인 HTML 코드를 createElement 함수를 사용해서 작성
+  - 대부분 createElement 를 직접 작성하지는 않는다.
+  - 일반적으로 바벨(babel)의 도움을 받아서 JSX 문법을 사용
     - createElement 함수보다는 JSX 문법으로 작성하는 리액트 코드가 훨씬 가독성이 좋기 때문
 
 #### 여러개의 돔 요소에 렌더링
@@ -227,64 +233,67 @@ webpack-test
     ┣-- index.js
     ┗-- Button.js
 ```
-- `npm init - y`
-  - package.json 파일이 생성
-- index.html 파일 생성 및 작성
-  - ```html
-    <!DOCTYPE html>
+`npm init - y`
+- package.json 파일이 생성
 
-    <html>
-      <body>
-        <div id="react-root"></div>
-        <script src="./dist/main.js"></script>
-      </body>
-    </html>
-    ```
-- `npm install webpack webpack-cli react react-dom`
-  - 필요한 외부 패키지 설치
+index.html 파일 생성 및 작성
+- ```html
+  <!DOCTYPE html>
 
-- index.js 파일 생성 및 작성
-  - ```js
-      import React from 'react';
-      import ReactDOM from 'react-dom';
-      import Button from './Button.js';
+  <html>
+    <body>
+      <div id="react-root"></div>
+      <script src="./dist/main.js"></script>
+    </body>
+  </html>
+  ```
+`npm install webpack webpack-cli react react-dom`
+- 필요한 외부 패키지 설치
 
-      function Container() {
-        return React.createElement(
-          'div',
-          null,
-          React.createElement('p', null, '버튼을 클릭해 주세요'),
-          React.createElement(Button, { label: '좋아요' }),
-          React.createElement(Button, { label: '싫어요' })
-        )
-      }
+index.js 파일 생성 및 작성
+- ```js
+    import React from 'react';
+    import ReactDOM from 'react-dom';
+    import Button from './Button.js';
 
-      const domContainer = document.querySelector('#react-root');
-      ReactDOM.render(React.createElement(Container), domContainer);
-    ```
-- Button.js 파일 생성 및 작성
-  - ```js
-      import React from 'react';
-      export default function Button(props) {
-        return React.createElement('button', null, props.label);
-      }
-    ```
-- npx webpack
-  - 웹팩을 이용해 두개의 자바스크립트 파일을 하나 합침
+    function Container() {
+      return React.createElement(
+        'div',
+        null,
+        React.createElement('p', null, '버튼을 클릭해 주세요'),
+        React.createElement(Button, { label: '좋아요' }),
+        React.createElement(Button, { label: '싫어요' })
+      )
+    }
+
+    const domContainer = document.querySelector('#react-root');
+    ReactDOM.render(React.createElement(Container), domContainer);
+  ```
+Button.js 파일 생성 및 작성
+- ```js
+    import React from 'react';
+    export default function Button(props) {
+      return React.createElement('button', null, props.label);
+    }
+  ```
+npx webpack
+- 웹팩을 이용해 두개의 자바스크립트 파일을 하나 합침
+
+<br>
 
 ## 1.3 create-react-app으로 시작하기
 create-react-app은 리액트 웹 애플리케이션을 만들기 위한 환경을 제공한다.
 
 ### 1.3.1 create-react-app 사용해 보기
 1. 설치
-    - 방식_1: 
-      - `npx create-react-app cra-test`
-    - 방식_2: 
-      - `npm install -g create-react-app`
-      - `create-react-app cra-test`
+  - 방식_1: 
+    - `npx create-react-app cra-test`
+  - 방식_2: 
+    - `npm install -g create-react-app`
+    - `create-react-app cra-test`
 2. 테스트
-    - cd cra-test
-    - npm start 
+- cd cra-test
+- npm start 
 
 ```
 cra-test
@@ -332,8 +341,46 @@ cra-test
   - 이 기능을 사용하면 바벨이나 웹팩의 설정을 변경할 수 있다.
 
 ### 1.3.3 자바스크립트 지원 범위
-
+- create-react-app에서는 ES6의 모든 기능을 지원
 ### 1.3.4 코드 분할하기
 - code splitting을 이용하면 사용자에게 필요한 양의 코드만 내려 줄 수 있다.
 
 ### 1.3.5 환경 변수 사용하기
+- create-react-app에서는 빌드 시점에 환경 변수를 코드로 전달할 수 있다
+- 환경 변수는 개발, 테스트, 배포 환경별로 다른 값을 적용할 때 유용하다. 전달된 환 경 변수는 코드에서 process.env.{환경 변수 이름}으로 접근할 수 있다.
+- `console.log(`${process.env.NODE_ENV}`);`
+
+#### 기타 환경 변수 이용하기
+- NODE_ENV 환경 변수 외의 다른 환경 변수는 REACT_APP_ 접두사를 붙여야 한다.
+- 환견 변수는 셸에서 입력하거나 .env 파일을 이용해 입력할 수 있다.
+- shell 에서 입력 하는 방법
+  - ```
+    // mac
+    REACT_APP_API_URL=api.myapp.com npm start
+    // window
+    set "REACT_APP_API_URL=api.myapp.com" && npm start
+    ```
+- 자바스크립트 파일 외에도 index.html 파일에서 다음과 같이 환경 변수를 사용할 수 있다.
+  - `<title>%REACT_APP_NODE_VERSION%</title>`
+
+<br>
+
+## 1.4 CSS 작성 방법 결정하기
+리액트로 프로그래밍을 할 때는 컴포넌트를 중심으로 생각하는게 좋다.
+
+UI는 컴포넌트의 조합으로 표현되며, 컴포넌트 하나를 잘 만들어서 여러 곳에 재사용하는 게 좋다.
+
+그렇게 하기 위해서 각 컴포넌트는 서로 간의 의존성을 최소화하면서 내부적으로 응집도(cohesion)를 높여야 한다.
+
+응집도가 높은 컴포넌트를 작성하기 위해서는 CSS 코드도 컴포넌트 내부에서 관리하는게 좋다.
+
+### 1.4.1 일반적인 CSS 파일로 작성
+### 1.4.2 css-module로 작성하기
+### 1.4.3 Sass로 작성하기
+### 1.4.4 css-in-js로 작성하기
+
+
+## 1.5 단일 페이지 애플리케이션 만들기
+리액트 애플리케이션의 페이지 전환은 단일 페이지 애플리케이션(Single Page Application, SPA) 방식으로 개발하는 것이 정석
+- 단일 페이지 애플리케이션은 초기 요청 시 서버에서 첫 페이지를 처리하고 이후의 라우팅은 클라이언트에서 처리하는 웹 애플리케이션이다.
+- 단일 페이지 애플리케이션은 페이지 전환에 의한 렌더링을 클라이언트에서 처리하기 때문에 마치 네이티브 애플리케이션처럼 자연스럽게 동작한다.

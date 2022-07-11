@@ -68,6 +68,7 @@ function MyComponent() {
   - 리액트에서 UI 데이터는 반드시 상탯값과 속성값을 관리해야 한다.
   - UI 데이터를 상탯값과 속성값으로 관리하지 않으면 UI 데이터가 변경돼도 화면이 갱신되지 않을 수 있다.
 - 불변 객체로 관리하는 속성값과 상탯값
+  - 불변 변수로 관리하면 코드의 복잡도가 낮아지는 장점이 있다.
 
 <br>
 
@@ -121,7 +122,7 @@ return ReactDOM.createPortal(<p>hello react</p>, domNode);
 ## 3.3 리액트 훅 기초 익히기
 훅은 함수형 컴포넌트에 기능을 추가할 때 사용하는 함수
 
-훅을 이요하면 함수형 컴포넌트에서 상탯값을 사용할 수 있고, 자식 요소에 접근할 수도 있다.
+훅을 이용하면 함수형 컴포넌트에서 상탯값을 사용할 수 있고, 자식 요소에 접근할 수도 있다.
 
 <br>
 
@@ -209,5 +210,200 @@ return ReactDOM.createPortal(<p>hello react</p>, domNode);
     - 두 상탯값을 하나의 객체로 관리한다.
     - useState 훅은 이전 상탯값을 덮어쓰기 때문에 `...state`같은 코드가 필요
     - 이렇게 상탯값을 하나의 객체로 관리할 때는 useReducer 훅을 사용하는게 좋다
+
+#### 상탯값 변경이 배치로 처리되지 않는 경우
+- 리액트는 내부에서 관리하는 이벤트 처리 함수에 대해서만 상탯값 변경을 배치로 처리한다.
+- 리액트 외부에서 관리되는 이벤트 처리 함수의 경우에는 상탯값 변경이 배치로 처리되지 않는다.
+
+### 3.3.2 컴포넌트에서 부수 효과 처리하기: useEffect
+- 함수 실행 시 함수 외부의 상태를 변경하는 연산을 부수 효과라고 부른다.
+- 특별한 이유가 없다면 모든 부수 효과는 useEffect 훅에서 처리하는 게 좋다.
+- 부수 효과?
+  - API 호출
+  - 이벤트 처리 함수를 등록하고 해제하는 것
+  - etc...
+- ```js
+  import React, { useState, useEffect } from 'react';
+
+  function MyComponent() {
+    const [count, setCount] = useState(0);
+
+    useEffect(() => {
+      document.title = `업데이트 횟수: ${count}`;
+    })
+    // 부수효과 함수는 렌더링 결과가 실제 돔에 반영된 후에 비동기로 호출된다.
+    return (
+      <button onClick={() => setCount(count + 1)}>increase</button>
+    )
+  }
+
+  export default MyComponent;
+  ```
+  - useEffect 훅에 입력하는 함수를 부수 효과 함수라고 한다.
+  - 부수 효과 함수는 렌더링 결고가 실제 돔에 반영된 후 호출되고, 컴포넌트가 사라지기 직전 마지막으로 호출된다. 
+- 컴포넌트에서 API 호출하기
+  - ```js
+      import React, { useState, useEffect } from 'react';
+      function MyComponent({userId}) {
+        const [user, setUser] = useState(null);
+        useEffect(
+          () => {
+            getUserApi(userId).then(data => setUser(data));
+          },
+          [userId]
+        );
+        return (
+          <div>
+            {!user && <p>사용자 정보를 가져오는 중 ...</p>}
+            {user && (
+              <>
+                <p>{`name is ${user.name}`}</p>
+                <p>{`age is ${user.age}`}</p>
+              </>
+            )}
+          </div>
+        )
+      }
+      export default MyComponent;
+    ```
+  - useEffect 훅의 두번째 매개변수로 배열을 입력하면, 배열의 값이 변경되는 경우에만 함수가 호출된다.
+  - 이 배열을 의존성 배열이라 한다.
+- 이벤트 처리 함수를 등록하고 해제하기
+  - ```js
+      import React, { useState, useEffect } from 'react';
+
+      function MyComponent() {
+        const [width, setWidth] = useState(window.innerWidth);
+
+        useEffect(() => {
+          const onResize = () => setWidth(window.innerWidth);
+          window.addEventListener('resize', onResize);
+
+          return () => {
+            window.removeEventListener('resize', onResize);
+          }
+        }, [])
+
+        return <div>{`width is ${width}`}</div>
+      }
+
+      export default MyComponent;
+    ```
+    - 의존성 배열로 빈 배열을 입력하면 컴포넌트가 생성될 때만 부수 효과 함수가 호출되고, 컴포넌트가 사라질 때만 반환된 함수가 호출된다.
+
+### 3.3.3 훅 직접 만들기
+- 리액트가 제공하는 훅을 이용해서 커스텀(custom) 훅을 만들 수 있다.
+- 커스텀 훅을 이용해서 또 다른 커스텀 훅을 만들 수도 있다.
+- 훅을 직접 만들어서 사용하면 쉽게 로직을 재사용할 수 있다.
+- 리액트의 내장 훅처럼 커스텀 훅의 이름은 use로 시작하는 게 좋다.
+- 코드의 가독성 및 리액트 개발 도구의 도움도 쉽게 반을 수 있다.
+- ```js
+  function useWindowWidth() {
+    const [width, setWidth] = useState(window.innerWidth);
+    useEffect(() => {
+      const onResize = () => setWidth(window.innerWidth);
+      window.addEventListener('resize', onResize);
+
+      return () => {
+        window.removeEventListener('resize', onResize);
+      }
+    }, [])
+    return width;
+  }
+  ```
+- useMounted 커스텀 훅
+  - 리액트에서 마운트란 컴포넌트의 첫 번째 렌더링 결과가 실제 돔에 반영된 상태를 말함
+  - 컴포넌트 마운트 여부를 알려 주는 useMounted 훅은 다음과 같이 작업할 수 있다.
+  - ```js
+      function useMounted() {
+        const [mounted, setMounted] = useState(false);
+        useEffect(() => setMounted(true), []);
+
+        return mounted;
+      }
+    ```
+### 3.3.4 훅 사용 시 지켜야 할 규칙
+- 아래의 규칙을 지켜야 리액트가 각 훅의 상태를 제대로 기억할 수 있다.
+  - 하나의 컴포넌트에서 훅을 호출하는 순서는 항상 같아야 한다.
+  - 훅은 함수형 컴포넌트 또는 커스텀 훅 안에서만 호출되어야 한다.
+
+<br>
+
+## 3.4 콘텍스트 API로 데이터 전달하기
+콘텍스트 API를 사용하면 컴포넌트의 중첩 구조가 복잡한 상황에서도 비교적 쉽게 데이터를 전달할 수 있다.
+- 콘텍스트 API를 사용하면 상위 컴포넌트에서 하위에 있는 모든 컴포넌트로 직접 데이터를 전달할 수 있다.
+- 이때 중간에 있는 컴포넌트는 콘텍스트 데이터의 존재를 몰라도 되므로 속성값을 반복해서 내려 주던 문제가 사라짐
+
+콘텍스트 API 적용 전
+```js
+function App() {
+  return (
+    <div>
+      <div>상단 메뉴</div>
+      <Profile username="mike"/>
+      <div>하단 메뉴</div>
+    </div>
+  );
+}
+
+
+function Profile({ username }) {
+  return (
+    <div>
+      <Greeting  username={username}/>
+    </div>
+  )
+}
+
+function Greeting({ username }) {
+  return <p>{`${username}님 안녕하세요~`}</p>
+}
+export default App;
+```
+
+콘텍스트 API 적용 후
+```js
+import React from 'react';
+const UserContext = React.createContext('');
+
+function App() {
+  return (
+    <div>
+      <UserContext.Provider value='mike'>
+        <div>상단 메뉴</div>
+        <Profile />
+        <div>하단 메뉴</div>
+      </UserContext.Provider>
+    </div>
+  );
+}
+
+
+function Profile() {
+  return (
+    <div>
+      <Greeting />
+    </div>
+  )
+}
+
+function Greeting() {
+  return (
+    <UserContext.Consumer>
+      {username => <p>{`${username}님 안녕하세요~`}</p>}
+    </UserContext.Consumer>
+  )
+}
+export default App;
+```
+- createContext 함수를 호출하면 콘텍스트 객체가 생성된다.
+  - `React.createContext(default) => {Provider, Consumer}`
+- 상위 컴포넌트에서는 Provider 컴포넌트를 이용해서 데이터를 전달
+- 하위 컴포넌트에서는 Consumer 컴포넌트를 이용해서 데이터를 사용한다.
+- Consumer 컴포넌트는 데이터를 찾기 위해 상위로 올라가면서 가장 가까운 Provider 컴포넌트를 찾는다.
+- 만약 최상위에 도달할 때까지 Provider 컴포넌트를 찾지 못한다면 기본값이 사용된다.
+- 기본값 덕분에 Provider 컴포넌트가 없어도 되므로, 어렵지 않게 Greeting 컴포넌트의 테스트 코드를 작성할 수 있다.
+- Provider 컴포넌트의 속성값이 변경되면 하위의 모든 Consumer 컴포넌트는 다시 렌더링된다.
+
 # 찾아보기!!
 React fiber
