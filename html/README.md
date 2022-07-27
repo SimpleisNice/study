@@ -184,3 +184,236 @@ dl 태그
 - gif : 제한적인 색을 사용하고 용량이 적으며 투명 이미지와 애니메이션 이미지를 지원하는 형식
 - jpg : 사진이나 일반적인 그림에 쓰이며 높은 압축률과 자연스러운 색상 표현을 지원하는 형식(투명을 지원하지 않는다.)
 - png : 이미지 손실이 적으며 투명과 반투명을 모두 지원하는 형식
+
+## 테이블 요소
+```html
+<table>
+  <tr>
+    <td>11</td><td>12</td><td>13</td>
+  </tr>
+  <tr>
+    <td>21</td><td>22</td><td>23</td>
+  </tr>
+  <tr>
+    <td>31</td><td>32</td><td>33</td>
+  </tr>
+</table>
+```
+표의 구성 요소
+- 표는 셀(내용이 들어가는 하나의 칸)로 이루어져 있다.
+- 표의 행(가로 방향)을 row
+- 표의 열(세로 방향)을 column
+- 관련 tag
+  - `<table>` 표를 나타내는 태그
+  - `<tr>` 행을 나타내는 태그
+  - `<th>` 제목 셀을 나타내는 태그
+  - `<td>` 셀을 나타내는 테그
+
+하나의 `<table>`은 
+- 하나 이상의 `<tr>` 로 이루어져 있으며
+- `<tr>`은 셀을 나타내는 `<th>`, `<td>`를 자식으로 가지게 된다.
+- 표를 작성할 때는 위에서 밑으로, 좌측에서 우측으로 작성하면된다.
+
+
+```html
+<table>
+  <caption>TABLE TITLE</caption>
+  <thead>
+    <tr>
+      <th>NAME</th><th>VALUE</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr><th>A</th><th>100</th></tr>
+    <tr><th>B</th><th>80</th></tr>
+  </tbody>
+  <tfoot>
+    <tr>
+      <th>SUM</th><th>180</th>
+    </tr>      
+  </tfoot>
+</table>
+```
+표의 구조와 관련된 태그
+- 표를 구조적으로 파악하기 위해 도움이 되는 태그를 사용해야함
+- 관련 tag
+  - `<caption>` 표의 제목을 나타내는 태그
+  - `<thead>` 제목 행을 그룹화하는 태그
+  - `<tbody>` 본문 행을 그룹화하는 태그
+  - `<tfoot>` 바닥 행을 그룹화하는 태그
+
+표와 관련된 속성
+- colspan: 셀을 가로 방향으로 통합
+- rowspan: 셀을 세로 방향으로 병합
+
+표 그리기 연습
+```html
+<table>
+  <caption>Specification values</caption>
+  <thead>
+    <tr>
+      <th rowspan="2">GRADE</th>
+      <th rowspan="2">Point.</th>
+      <th colspan="2">Strength</th>
+      <th rowspan="2">Percent.</th>
+    </tr>
+    <tr>
+      <th>kg/mm</th>
+      <th>lb/in</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Hard</td>
+      <td>0.45</td>
+      <td>56.2</td>
+      <td>80,000</td>
+      <td>20</td>
+    </tr>
+    <tr>
+      <td>Medium</td>
+      <td>0.45</td>
+      <td>49.2</td>
+      <td>70,000</td>
+      <td>25</td>
+    </tr>
+    <tr>
+      <td>Soft</td>
+      <td>0.45</td>
+      <td>42.2</td>
+      <td>60,000</td>
+      <td>30</td>
+    </tr>
+  </tbody>
+</table>
+```
+- 표를 그리기 전에 행과 열이 몇 칸인지 계산이 필요
+  - 위의 예시의 경우 5x5의 형식의 표이다.
+
+기타
+- `<col>`
+  - 열을 나타내며, 열에 속하는 칸에 공통된 의미를 부여할 때 사용
+  - `span` 속성은 `<col>`이 차지할 열의 수를 나타내는 양의 정수
+    - 기본값은 1
+- `<colgroup>`
+  - 표의 열을 묶는 그룹을 정의
+  - `span` 속성은 `<col>`이 차지할 열의 수를 나타내는 양의 정수
+    - 기본값은 1
+    - `<col>` 요소가 존재하면 사용할 수 없다.
+- scope 속성
+  - `<th>` 태그의 scope 속성은 해당 셀이 관련되는 셀의 종류를 명시
+  - 스크린 리더기와 같은 장치에서는 유용하게 사용될 수 있다.
+- header 속성
+  - `<td>` 태그의 header 속성은 해당 데이터 셀과 연관된 하나 이상의 헤더 셀을 명시
+  - 스크린 리더기와 같은 장치에서는 유용하게 사용될 수 있다.
+
+
+## 폼 요소
+사용자로부터 데이터를 받아야 하는 경우 사용되는 요소들을 폼 요소라고 한다.
+
+input
+```html
+<input type="text" placeholder="test">
+<input type="password">
+<input type="radio" name="gender">남자
+<input type="radio" name="gender">여자
+<input type="checkbox" checked name="hobby">등산
+<input type="checkbox" name="hobby">독서
+<input type="checkbox" name="hobby">운동
+<input type="file">
+<input type="submit" value="전송">
+<input type="reset" value="초기화">
+<input type="button" value="버튼">
+<input type="image" src="" alt="" width="" height="">
+```
+- 다양한 type 속성이 존재한다.
+- name 속성은 그룹화시켜주는 속성이다.
+- checked 속성은 값이 별도로 존재하지 않는 boolean 속성이다.
+  - 속성 있으면 true, 없으면 false
+- submit, reset, image, button 타입은 모두 클릭 가능한 버튼을 만든다.
+  - submit : form의 값을 전송하는 버튼
+  - reset : form의 값을 초기화하는 버튼
+  - image : 이미지를 삽입할 수 있는 버튼 (submit과 동작이 동일함)
+  - button : 아무 기능이 없는 버튼
+
+
+select
+```html
+<select>
+  <option>서울</option>
+  <option>경기</option>
+  <option>강원</option>
+</select>
+```
+- `<select>`는 선택 목록 상자 또는 콤보박스라고 한다.
+- 몇 개의 선택지를 리스트 형태로 노출하고 그중 하나를 선택할 수 있게 하는 태그
+  - multiple 속성을 다용하면 다중 선택도 가능
+
+textarea
+```html
+<textarea rows="5" cols="30" placeholder="text"></textarea>
+```
+- 여러 줄의 텍스트를 입력할 때 사용
+- `<textarea>`에는 텍스트 상자 크기를 조절하는 rows, colos 속성이 있다.
+  - cols 가로의 크기를 조절하는 속성
+  - rows 세로 크기를 조절하는 속성
+
+button
+```html
+<button type="submit">test</button>
+<button type="rest">test</button>
+<button type="button">test</button>
+```
+- 버튼을 만들때 사용
+- submit, reset, button 3가지 타입이 있다.
+- input 태그의 submit, reset, button 타입과 같은 기능을 가진 버튼이다.
+  - 빈 태그가 아니면 내용을 안에 직접 넣을 수 있으므로 좀 더 자유로운 스타일의 표현이 가능
+
+
+label
+```html
+<label for="name">이름</label>:<input type="text" id="name">
+<label for="nickname">별명</label>:<input type="text" id="nickname">
+```
+- `<label>`은 form 요소의 이름과 form 요소를 명시적으로 연결시켜주기 위해 사용
+- form 요소의 id 속성값과 `<label>`의 for 속성값을 같게 적어주어야 한다.
+- `<label>`을 사용하면 이를 클릭했을 경우 해당 form 요소를 클릭한 것 처럼 동작
+- 또한, 스크린 리더기를 통해 듣게 되면 해당 form 요소 접근시 해당 label을 함께 읽어주게 된다.
+- label 은 사용성, 접근성적인 측명으로 중요한 역할을 하므로 반드시 써주는게 좋다.
+
+
+fieldset, legend
+```html
+<fieldset>
+  <legend>기본 정보</legend>
+  <!-- 폼요소 -->
+</fieldset>
+<fieldset>
+  <legend>기본 정보</legend>
+  <!-- 폼요소 -->
+</fieldset>
+```
+- `<fieldset>`, `<legend>`는 form 요소를 구조화 하기 위해 필요한 태그
+  - `<fieldset>` : 여러 개의 폼 요소를 그룹화하여 구조적으로 만들기 위해 사용
+  - `<legend>` : 폼 요소의 제목으로 `<fieldset>` 내부에 작성
+- `<fieldset>`은 보통 form의 성격에 따라 구분합니다.
+- `<legend>`는 `<fieldset>`의 자식으로 반드시 최상단에 위치해야 합니다.
+
+
+form
+```html
+<form>
+  <fieldset>
+    <legend>기본정보</legend>
+    <!-- 폼요소 -->
+  </fieldset>
+  <fieldset>
+    <legend>부가정보</legend>
+    <!-- 폼 요소 -->
+  </fieldset>
+</form>
+```
+- `<form>`은 form 요소들을 감싸는 태그로 데이터를 묶어서 실제 서버로 전공하는 역할을 하는 태그
+- `<form>`에는 대표적인 2가지 속성이 있다.
+  - action: 데이터를 처리하기 위한 서버의 주소
+  - method: 데이터를 전송하는 방식을 지정
