@@ -417,3 +417,68 @@ form
 - `<form>`에는 대표적인 2가지 속성이 있다.
   - action: 데이터를 처리하기 위한 서버의 주소
   - method: 데이터를 전송하는 방식을 지정
+
+## 콘텐츠 모델
+HTML5에는 요소들이 가지고 있는 성격에 따라 요소의 종류를 정의하는 규칙들이 있으며
+
+요소는 이 규칙들을 준수하고 반드시 HTML 권고안을 따라야 한다.
+
+이런 규칙에 대해 비슷한 성격의 요소들끼리 그룹화한 것이 콘텐츠 모델이며
+
+각각의 요소들은 하나 또는 여러 개의 콘텐츠 모델에 속하게 된다.
+
+![콘텐츠 모델](./images/contentModel.png)
+- Metadata Content
+  - " base, link, meta, noscript, script, style, title " 
+  - Metadata에는 콘텐츠의 스타일, 동작을 설정하거나 다른 문서와의 관계 등 정보를 포함하는 요소들이 포함
+  - 메타 태그, 타이틀 태그, 스타일 태그, 링크 태그가 이에 해당하며 대부분 `<head>`내에 들어간다는 것이 특징
+- Flow Content
+  - "a, abbr, address,map>area, article, aside,audio, b, bdo, blockquote,br, button, canvas, cite, code, datalist, del, details, dfn, div, dl, em, embed, fieldset, figure, footer, form, h1 ~ h6, header, hgroup, hr, i, iframe, img,  input, ins, kbd, keygen, label, map, mark, math, menu, meter, nav, noscript, object, ol, output, p, pre, progress, q, ruby, samp, script, section, select, small, span, strong,style[scoped], sub, sup, svg, table, textarea, time, ul, var, video, wbr " 
+  - Flow에는 문서의 자연스러운 흐름에 의해 배치되는 요소들이 포함
+  - Metadata에 해당하는 일부 태그들만 Flow에서 제외되며 요소 대부분이 Flow에 포함
+- Sectioning Content
+  - " article, aside, nav, section " 
+  - Sectioning에는 문서의 구조와 관련된 요소들이 포함됩니다.
+  - HTML5에서 새로 생긴` <article>, <aside>, <nav>, <section>` 등이 포함되며 이 태그들은 문서의 구조, 아웃라인에 영향을 주게 됩니다.
+- Heading Content
+  - " h1, h2, h3, h4, h5, h6 " 
+  - Heading에는 각 section의 header를 정의하는 heading 태그가 포함됩니다.
+- Phrasing Content
+  - "a, abbr, map>area, audio, b, bdo, br, button, canvas, cite, code, datalist, del, dfn, em, embed, i, iframe, img, input, ins, kbd, keygen, label, map, mark, math, meter, noscript, object, output, progress, q, ruby, samp, script, select, small, span, strong, sub, sup, svg, textarea, time, var, video, wbr"
+  - Phrasing에는 문서의 텍스트 또는 텍스트를 꾸며주는 문단 내부 레벨로 사용되는 요소들이 포함됩니다.
+- Embedded Content
+  - " audio, canvas, embed, iframe, img, math, object, svg, video " 
+  - Embedded에는 외부 콘텐츠를 표현하는 요소들이 포함되며 오디오나 비디오, 이미지 등 멀티미디어 관련 요소들이 이에 해당합니다.
+- Interacitve Content
+  - " a, audio[controls], button, details, embed, iframe, img[usemap], input, keygen, label, menu, object[usemap], select, textarea, video[controls] " 
+  - Interactive에는 사용자와 상호작용을 하는 요소들이 포함되며 대표적으로 form 요소들이 이에 해당합니다.
+
+## 시멘틱 마크업
+https://developer.mozilla.org/en-US/docs/Glossary/Semantics
+```html
+<b>굵은</b> vs <strong>중요한</strong>
+<i>기울어진</i> vs <em>강조하는</em>
+<u>밑줄친</u> vs <ins>새롭게 추가된</ins>
+<s>중간선이 있는</s> vs <del>삭제된</del>
+```
+- 시멘틱이란 영어로 의미론적인이란 뜻을 가지고 있다.
+- 시멘틱은 기계가 잘 이해할 수 있도록 하는 것을 뜻함
+- 시멘틱 마크업하기?
+  - 의미에 맞는 요소 사용
+  - 문서의 구조화
+  - 인간과 기계가 모두 이해할 수 있는 것이 목표
+
+## block & inline level
+![block inline level](./images/blockInlineLevel.png)
+
+블록 레벨 요소
+- 부모 요소의 가로 영역에 맞게 채워져 표현되는 요소
+- 양옆으로 다른 요소가 배치되지 않게 박스를 생성하므로 위아래로 줄 바꿈이 생김
+- 블록 레벨 요소는 일반적인 모든 요소(블록, 인라인 레벨등)을 포함할 수 있다.
+  - h1, p 요소는 블록 레벨 요소지만, 내부 요소로 Phrasing Content만 허용
+
+인라인 레벨 요소
+- 하나의 라인 안에서 자신의 내용만큼의 박스를 만드는 요소
+- 라인의 흐름을 끊지 않고 요소 앞 뒤로도 줄 바꿈이 되지 않아 다른 인라인 요소들이 자리할 수 있다.
+- 인라인 레벨 요소는 블록 레벨 요소의 자식으로 분류되기 때문에 자손으로 블록 레벨 요소를 가질 수 없다.
+  - HTML5 기준으로 `<a>`는 인라인 레벨 요소지만 자손으로 블록 레벨 요소를 가질 수 있다.
