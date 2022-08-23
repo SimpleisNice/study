@@ -341,5 +341,67 @@ important
 <br>
 
 ## 상속
+https://developer.mozilla.org/en-US/docs/Web/CSS/inheritance
+
 CSS에서 상속은 우리가 기본적으로 알고 있는 부모가 가진 특성을 자식이 물려받는 개념과 같다.
 
+```html
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8">
+    <title>CSS</title>
+    <style media="screen">
+      * { color: red; }
+      h1#page { color: gray; }
+    </style>
+  </head>
+  <body>
+    <h1 id="page">HELLO, <em>CSS</em></h1>
+  </body>
+</html>
+```
+
+상속되는 속성
+- 박스 모델 속성들은 상속되지 않는다.
+
+상속되는 속성의 구체성
+- 상속된 속성은 아무런 구체성을 가지지 못함
+
+<br>
+
+## 캐스케이딩(cascading)
+https://developer.mozilla.org/en-US/docs/Web/CSS/Cascade
+
+스타일 규칙들이 어떠한 기준으로 요소에 적용되는지를 정한 규칙
+
+### cascading 규칙
+- 중요도(!important)와 출처
+  - 출처는 CSS 의 출처를 의미한다.
+  - CSS 출처는 제작자와 사용자, 그리고 사용자 에이전트 경우로 구분
+    - 제작자의 경우 사이트를 실제 제작하는 개발자가 작성한 CSS를 의미
+    - 사용자의 경우 웹페이지를 방문하는 일반 사용자들이 작성한 CSS 의미
+    - 사용자 에이전트의 경우는 일반 사용자의 환경, 즉 브라우저에 내장된 CSS를 의미
+- 구체성
+- 선언 순서
+
+
+### 모든 스타일은 아래의 규칙에 따라 단계적으로 적용
+1. 스타일 규칙들을 모아서 중요도가 명시적으로 선언되었는지에 따라 분류
+    - 중요도가 명시적으로 선언된 규칙들은 그렇지 않은 규칙들보다 우선한다.
+    - 중요도가 있는 규칙들끼리는 아래 다른 규칙들을 적용 받는다.
+2. 스타일 규칙들을 출처에 따라 분류
+    - 제작자 스타일 규칙이 사용자 에이전트 규칙보다 우선
+3. 스타일 규칙들을 구체성에 따라 분류
+    - 구체성이 높은 규칙들이 우선한다.
+4. 스타일 규칙들을 선언 순서에 따라 분류
+    - 뒤에 선언된 규칙일수록 우선
+
+<br>
+
+## 선택자 정리
+https://www.w3schools.com/cssref/css_selectors.asp
+
+<br>
+
+## 속성
