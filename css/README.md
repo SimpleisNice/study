@@ -405,3 +405,32 @@ https://www.w3schools.com/cssref/css_selectors.asp
 <br>
 
 ## 속성
+https://www.w3schools.com/css/default.asp
+
+https://developer.mozilla.org/ko/
+
+### 속성-단위
+https://developer.mozilla.org/en-US/docs/Learn/CSS/Building_blocks/Values_and_units
+
+단위의 크기는 절대 길이 단위와 상대 길이 단위로 구분되어 진다.
+
+- 절대 길이
+  - `px (1px = 1/96th of 1 inch)`
+    - 절대 길이는 고정된 크기 단위로, 다른 요소의 크기에 영향을 받지 않는다.
+    - 절대 길이이므로 다른 요소의 영향을 받지 않아 화면에 고정된 크기를 가지지만, 장치의 해상도에 따라 상대적이다.
+    - 여러 환경에서 디자인을 같게 표현하고 브라우저 호환성에 유리한 구조로 되어 있다.
+  - `pt (1pt = 1/72 of 1 inch)`
+    - 컴퓨터가 없던 시절부터 있던 단위
+    - 인쇄물이나 워드프로세서 프로그램에서 사용된 가장 작은 표준 인쇄단위
+    - 웹 화면에 인쇄용 문서를 위한 스타일을 적용할 때 유용하게 사용
+    - 사용하는 기기의 해상도에 따라 차이가 있으므로, W3C에서도 `pt`는 웹 개발시 권장하는 단위가 아님
+      - window 9pt = 12px
+      - mac 9pt = 9px
+- 상대 길이
+  - 상대 길이는 다른 요소의 크기나 폰트 크기, 브라우저(viewport) 등의 크기에 따라 상대적으로 값이 변함
+  - %: 부모의 값에 대해서 백분율로 환산한 크기를 갖게 됩니다.
+  - em: font-size를 기준으로 값을 환산합니다. 소수점 3자리까지 표현 가능합니다.
+  - rem: root의 font-size를 기준으로 값을 환산합니다.
+  - vw: viewport의 width값을 기준으로 1%의 값으로 계산됩니다.
+
+### 속성-색상
