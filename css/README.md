@@ -434,3 +434,134 @@ https://developer.mozilla.org/en-US/docs/Learn/CSS/Building_blocks/Values_and_un
   - vw: viewport의 width값을 기준으로 1%의 값으로 계산됩니다.
 
 ### 속성-색상
+```html
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8">
+    <title>CSS</title>
+    <style>
+      div { height: 20px; width: 100%; }
+    </style>
+  </head>
+  <body>
+    <h1>COLORS CAN BE SET USING HEXADECIMAL VALUES</h1>
+    <div style="background-color:#ff0000"></div>
+    <div style="background-color:#00ff00"></div>
+    <div style="background-color:#0000ff"></div>
+    <div></div>
+    <div style="background-color:rgb(255, 0, 0)"></div>
+    <div style="background-color:rgb(0, 255, 0)"></div>
+    <div style="background-color:rgb(0, 0, 255)"></div>
+    <div></div>
+    <div style="background-color:rgba(255, 0, 0, 1)"></div>
+    <div style="background-color:rgba(0, 255, 0, 1)"></div>
+    <div style="background-color:rgba(0, 0, 255, 1)"></div>
+    <h1 style="color:#ff0000">HEADING</h1>
+    <h1 style="color:#00ff00">HEADING</h1>
+    <h1 style="color:#0000ff">HEADING</h1>
+  </body>
+</html>
+```
+
+색상 값 지정 방식
+- 컬러 키워드
+  - CSS 자체에서 사용 가능한 문자 식별자
+  - red, blue, black 등과 같이 미리 정의되어 있는 키워드를 이용해 색상 표현
+- 16 진법
+  - 각 자리의 알파벳은 대소문자를 구분하지 않음
+  - `#RRGGBB`
+    - RR: 적색
+    - GG: 녹색
+    - BB: 청색
+  - `#RGB`
+    - 위의 방식에서 각각의 두자리가 같은 값을 가지면 3자리로 축약하여 사용할 수 있음
+- RGB()
+  - `rgb(R, G, B)`
+    - rgb(R, G, B)의 형태로 각 변수 값(R 적색, G 녹색, B 청색)의 강도를 정의
+    - 0 ~ 255의 정수로 된 값으로 지정
+    - 0 -> 255는 검정에서 흰색으로 값의 변화를 나타냄
+- RGBA()
+  - `rgba(R, G, B, A)`
+    - rgb(R, G, B, A)의 형태로 각 변수는(R 적색, G 녹색, B 청색, A 투명도)의 강도를 정의
+    - 0 ~ 255의 정수로 된 값으로 지정
+    - 0 -> 255는 검정에서 흰색으로 값의 변화를 나타냄
+    - A의 값은 0 ~ 1 사이의 값을 지정할 수 있으며, 0.5와 같이 소수점으로 표기
+    - 0 -> 은 투명에서 불투명으로 값의 변화를 나타냄
+
+<br>
+
+### 속성-background
+요소 배경에 관련된 속성을 지정할 때 사용
+
+https://www.w3schools.com/css/css_background.asp
+
+```html
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8">
+    <title>CSS</title>
+    <style>
+      div {
+        height: 1000px;
+        background-color: pink;
+        background-image: url(https://www.w3schools.com/CSSref/img_tree.gif);
+        background-repeat: no-repeat;
+        background-position: center center;
+        /* 브라우저 성능에 영향을 미침*/
+        background-attachment: fixed; 
+
+        background: pink url(https://www.w3schools.com/CSSref/img_tree.gif) no-repeat center center fixed;
+      }
+      span {
+        background-color: pink;
+      }
+    </style>
+  </head>
+  <body>
+    <div>
+      배경에 대해서 알아볼까요?배경에 대해서 알아볼까요? 
+    </div>
+    <span>
+      배경에 대해서 알아볼까요?배경에 대해서 알아볼까요?
+    </span>
+  </body>
+</html>
+```
+
+
+background-color
+- `background-color: pink;`
+- 기본 값: transparent
+- 배경의 색상을 지정하는 속성
+
+background-image
+- `background-image: url(https://www.w3schools.com/CSSref/img_tree.gif);`
+- 기본값: none
+- 배경으로 사용할 이미지의 경로를 지정하는 속성
+- url의 경로는 절대 경로, 상대 경로 모두 사용 가능
+- background-color에 색상이 적용된 상태에서 background-image로 사용된 이미지에 투명한 부분이 있다면, 그 부분에 background-color 색상이 노출됨
+
+background-repeat
+- `background-repeat: repeat;`
+- 기본값: repeat
+- 이미지의 반복 여부와 방향을 지정하는 속성
+
+background-position
+- `background-position: 0% 0%;`
+- 기본값: 0% 0%
+- 요소에서 배경 이미지의 위치를 지정하는 속성
+- x축 y축으로부터 위치를 지정할 수 있음
+- 선언 순서는 x축, y축으로부터의 간격
+- 만일 한쪽만 지정된다면 나머지는 중앙 값(center)으로 지정
+
+background-attachment
+- `background-attachment: scroll;`
+- 기본값: scroll
+- 화면 스크롤에 따른 배경 이미지의 움직임 여부를 지정하는 속성
+- 브라우저 성능에 영향을 미치므로, 사용에 주의
+
+
+축약
+- `background: [-color] [-image] [-repeat] [-attachment] [-position];`
