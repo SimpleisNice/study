@@ -3,6 +3,7 @@
 - 1.2 리액트 개발 환경 직접 구축하기
 
 <br>
+<br>
 
 ## 1.1 리액트란 무엇인가?
 리액트는 페이스북에서 개발하고 관리하는 UI 라이브러리
@@ -18,6 +19,7 @@
 - render 함수는 순수 함수로 작성
 - state 불변 변수로 관리 
 
+<br>
 <br>
 
 ## 1.2 리액트 개발 환경 직접 구축하기
@@ -53,7 +55,8 @@
 ```js
 // simple.js
 function LikeButton() {
-  // 초기값과 함께 컴포넌트의 상태값을 정의, 여기서 React 변수는 react.development.js 파일에서 전역 변수로 생성
+  // 초기값과 함께 컴포넌트의 상태값을 정의
+  // 여기서 React 변수는 react.development.js 파일에서 전역 변수로 생성
   const [liked, setLiked] = React.useState(false);
   // 컴포넌트의 상태값에 따라 동적으로 버튼의 문구 결정
   const text = liked ? '좋아요 취소' : '좋아요';
@@ -74,10 +77,10 @@ ReactDOM.render(React.createElement(LikeButton), domContainer);
 ```
 
 #### createElement 함수 이해하기
-- React.createElement(component, props, …children) => ReactElement
+- `React.createElement(component, props, …children) => ReactElement`
   - 첫 번째 매개변수 component는 일반적으로 문자열이나 리액트 컴포넌트
     - 컴포넌트의 인수가 문자열이면 HTML 태그에 해당하는 돔 요소가 생성된다.
-    - Ex) ‘p’ 를 입력하면 HTML p 태그가 생성된다.
+    - Ex) 'p' 를 입력하면 HTML p 태그가 생성된다.
   - 두 번째 매개변수 props는 컴포넌트가 사용하는 데이터를 나타낸다.
     - 돔 요소의 경우 style, className 등의 데이터가 사용될 수 있다.
   - 세 번째 매개변수 children은 해당 컴포넌트가 감싸고 있는 내부의 컴포넌트를 가리킨다.
@@ -136,7 +139,7 @@ ReactDOM.render(React.createElement(LikeButton), document.querySelector('#react-
 function LikeButton() {
   const [liked, setLiked] = React.useState(false);
   const text = liked ? '좋아요 취소' : '좋아요';
-  return React.createElement('button', { onClick: () => setLiked(!liked) },text,);
+  return React.createElement('button', { onClick: () => setLiked(!liked) }, text);
 }
 
 function Container() {
@@ -199,9 +202,9 @@ function Container() {
 #### JSX 문법을 바벨로 컴파일하기
 - babel 설치
   - npm install @babel/core @babel/cli @babel/preset-react
-    - @babel/cli에는 커맨드 라인에서 바벨을 실행할 수 있는 바이너리 파일이 들어 있다.
-    - @babel/preset-react에는 JSX로 작성된 코드를 createElement 함수를 이용한 코드로 변환해 주는 플러그인이 들어 있다.
-    - @babel/preset-react는 리액트 애플리케이션을 만들 때 필요한 플러그인을 모아 놓은 프리셋이다.
+    - `@babel/cli`에는 커맨드 라인에서 바벨을 실행할 수 있는 바이너리 파일이 들어 있다.
+    - `@babel/preset-react`에는 JSX로 작성된 코드를 createElement 함수를 이용한 코드로 변환해 주는 플러그인이 들어 있다.
+    - `@babel/preset-react`는 리액트 애플리케이션을 만들 때 필요한 플러그인을 모아 놓은 프리셋이다.
 - 스크립트 파일 변환
   - npx babel --watch src --out-dir . --presets @babel/preset-react
     - npx 명령어는 외부 패키지에 포함된 실행 파일을 실행할 때 사용된다.
@@ -216,13 +219,13 @@ function Container() {
 - 하나의 목적을 위해 여러개의 플러그인이 필요할 수 있는데, 이러한 플러그인의 집합을 프리셋(preset)이라고 한다.
 
 ### 1.2.3 웹팩의 기본 개념 이해하기
-- 웹팩은 자바스크립트로 만든 프로그램을 배포하기 좋은 혀앹로 묶어주는 도구이다.
+- 웹팩은 자바스크립트로 만든 프로그램을 배포하기 좋은 형태로 묶어주는 도구이다.
 - 웹팩은 ESM(ES6의 모듈 시스템)과 commonJS를 모두 지원
 
 #### 자바스크립트 모듈 시스템
 - 하나의 파일이 하나의 모듈이 되고 사용하는 쪽에서는 여러 모듈을 가져다 쓸 수 있다.
-이때 모듈 측에서는 필요한 부분만 내보내는 방법이 필요하고, 사용하는 측에서는 필요한것만 가져다 쓸 방법이 필요하다.
-이때 내보내고 가져다 쓸 수 있도록 구현된 시스템이 모듈 시스템이다.
+- 이때 모듈 측에서는 필요한 부분만 내보내는 방법이 필요하고, 사용하는 측에서는 필요한것만 가져다 쓸 방법이 필요하다.
+- 이때 내보내고 가져다 쓸 수 있도록 구현된 시스템이 모듈 시스템이다.
 
 ### 1.2.4 웹팩 사용해 보기
 ```
@@ -272,13 +275,16 @@ index.js 파일 생성 및 작성
 Button.js 파일 생성 및 작성
 - ```js
     import React from 'react';
+
     export default function Button(props) {
       return React.createElement('button', null, props.label);
     }
   ```
+
 npx webpack
 - 웹팩을 이용해 두개의 자바스크립트 파일을 하나 합침
 
+<br>
 <br>
 
 ## 1.3 create-react-app으로 시작하기
@@ -286,14 +292,14 @@ create-react-app은 리액트 웹 애플리케이션을 만들기 위한 환경�
 
 ### 1.3.1 create-react-app 사용해 보기
 1. 설치
-  - 방식_1: 
-    - `npx create-react-app cra-test`
-  - 방식_2: 
-    - `npm install -g create-react-app`
-    - `create-react-app cra-test`
+    - 방식_1: 
+      - `npx create-react-app cra-test`
+    - 방식_2: 
+      - `npm install -g create-react-app`
+      - `create-react-app cra-test`
 2. 테스트
-- cd cra-test
-- npm start 
+    - cd cra-test
+    - npm start 
 
 ```
 cra-test
@@ -342,12 +348,14 @@ cra-test
 
 ### 1.3.3 자바스크립트 지원 범위
 - create-react-app에서는 ES6의 모든 기능을 지원
+
 ### 1.3.4 코드 분할하기
 - code splitting을 이용하면 사용자에게 필요한 양의 코드만 내려 줄 수 있다.
 
 ### 1.3.5 환경 변수 사용하기
 - create-react-app에서는 빌드 시점에 환경 변수를 코드로 전달할 수 있다
-- 환경 변수는 개발, 테스트, 배포 환경별로 다른 값을 적용할 때 유용하다. 전달된 환 경 변수는 코드에서 process.env.{환경 변수 이름}으로 접근할 수 있다.
+- 환경 변수는 개발, 테스트, 배포 환경별로 다른 값을 적용할 때 유용하다.
+- 전달된 환 경 변수는 코드에서 `process.env.{환경 변수 이름}`으로 접근할 수 있다.
 - `console.log(`${process.env.NODE_ENV}`);`
 
 #### 기타 환경 변수 이용하기
@@ -368,7 +376,7 @@ cra-test
 ## 1.4 CSS 작성 방법 결정하기
 리액트로 프로그래밍을 할 때는 컴포넌트를 중심으로 생각하는게 좋다.
 
-UI는 컴포넌트의 조합으로 표현되며, 컴포넌트 하나를 잘 만들어서 여러 곳에 재사용하는 게 좋다.
+UI는 컴포넌트의 조합으로 표현되며, 컴포넌트 하나를 잘 만들어서 여러 곳에 재사용하는게 좋다.
 
 그렇게 하기 위해서 각 컴포넌트는 서로 간의 의존성을 최소화하면서 내부적으로 응집도(cohesion)를 높여야 한다.
 
