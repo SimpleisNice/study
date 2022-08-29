@@ -565,3 +565,107 @@ background-attachment
 
 축약
 - `background: [-color] [-image] [-repeat] [-attachment] [-position];`
+
+<br>
+
+### 속성-boxmodel
+
+https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Box_Model/Introduction_to_the_CSS_box_model
+
+![box model](./images/box_model.png)
+
+문서를 배치할 때 브라우저의 렌더링 엔진은 표준 CSS 기본 박스 모델에 따라 각 요소를 사각형 상자로 나타냄
+
+CSS를 이용해 이 상자의 크기, 위치 및 속성(색상, 배경, 테두리 크기 등)을 변경할 수 있다.
+
+```html
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8">
+    <title>CSS</title>
+    <style>
+      div {
+        margin: 50px;
+        padding: 30px;
+        border: 10px solid #000;
+      }
+    </style>
+  </head>
+  <body>
+    <div>
+      box model
+    </div>
+  </body>
+</html>
+```
+
+boxmodel 구성
+- Content 영역
+  - 요소의 실제 내용을 포함하는 영역
+  - 따라서 크기는 내용의 너비 및 높이를 나타냅니다.
+- Border 영역
+  - content 영역을 감싸는 테두리 선을 border
+- Padding 영역
+  - content 영역과 테두리 사이의 여백을 padding
+  - content 영역이 배경, 색 또는 이미지가 있을 때 패딩 영역까지 영향을 미칩
+  - 이에 따라 padding을 content의 연장으로 볼 수도 있음
+- Margin 영역
+  - border 바깥쪽의 영역을 margin이라고 함
+  - border 영역을 다른 요소와 구별하기 위해 쓰이는 빈 영역
+  - 즉, 주변 요소와의 여백(간격)을 margin을 이용해 지정할 수 있음
+
+<br>
+
+### border
+border 속성은 요소의 테두리에 관련된 속성을 지정할 때 사용
+
+테두리의 굵기, 모양, 색상을 지정할 수 있는 속성들이 있음
+
+```html
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8">
+    <title>CSS</title>
+    <style>
+      div {
+        margin: 50px;
+        padding: 30px;
+
+        border-width: 10px 20px 10px 20px;
+        border-style: solid;
+        border-color: red green red green;
+        
+        border: 10px solid green;
+      }
+    </style>
+  </head>
+  <body>
+    <div>
+      box model
+    </div>
+  </body>
+</html>
+```
+
+속성
+- border-width
+  - `border-width: [top] [right] [bottom] [left];`
+  - 기본 값: medium
+  - 선의 굵기를 지정하는 속성
+  - border-top-width, border-bottom-width, border-right-width, border-left-width를 이용하여 상하좌우 선의 굵기를 다르게 표현할 수 있음
+- border-style
+  - `border-style: [top] [right] [bottom] [left];`
+  - 기본 값: none
+  - 선의 모양을 지정하는 속성
+  - border-top-style, border-bottom-style, border-right-style, border-left-style을 이용하여 상하좌우 선의 모양을 다르게 표현할 수 있음
+- border-color
+  - `border-color: [top] [right] [bottom] [left];`
+  - 기본 값: currentColor
+  - 선의 색상을 지정하는 속성
+  - . border-top-color, border-bottom-color, border-right-color, border-left-color를 이용하여 상하좌우 선의 색상을 다르게 표현할 수 있음
+
+border 축약
+- `border: [-width] [-style] [-color];`
+- 정의되지 않은 속성값에 대해서는 기본값이 적용
