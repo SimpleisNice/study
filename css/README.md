@@ -669,3 +669,250 @@ border 속성은 요소의 테두리에 관련된 속성을 지정할 때 사용
 border 축약
 - `border: [-width] [-style] [-color];`
 - 정의되지 않은 속성값에 대해서는 기본값이 적용
+
+<br>
+
+### 속성-padding
+
+padding 영역은 border와 content 사이의 여백
+
+```html
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8">
+    <title>CSS</title>
+    <style>
+      div {
+        padding-top: 0px;
+        padding-right: 10px;
+        padding-bottom: 20px;
+        padding-left: 30px;
+
+        /* 시계 방향 순서 */
+        padding: 0px 10px 20px 30px;
+        /* 좌우가 같은 경우 */
+        padding: 0px 10px 20px;
+        /* 상하가 같고 좌우가 같은 경우 */
+        padding: 10px 30px;
+        /* 상하좌우가 같은 경우 */
+        padding: 10px;
+
+        border: 10px solid green;
+      }
+    </style>
+  </head>
+  <body>
+    <div>
+      box model
+    </div>
+  </body>
+</html>
+```
+padding
+- 기본값은 0이다.
+- 속성
+  - padding-top
+    - content 영역의 위쪽 여백을 지정합니다.
+  - padding-right
+    - content 영역의 오른쪽 여백을 지정합니다.
+  - padding-bottom
+    - content 영역의 아래쪽 여백을 지정합니다.
+  - padding-left
+    - content 영역의 왼쪽 여백을 지정합니다.
+
+padding 축약
+- `padding: [-top] [-right] [-bottom] [-left];`
+
+CSS에서 0 값에 대해서는 단위를 따로 적지 않음
+
+<br>
+
+### 속성-margin
+
+margin은 border 영역을 다른 요소와 구별하기 위해 쓰이는 빈 영역이라고 배웠다.
+
+즉, 이 말은 다른 요소와의 간격을 만들 수 있다는 것이다.
+
+```html
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8">
+    <title>CSS</title>
+    <style>
+      div {
+        width: 300px;
+        margin-right: auto;
+        margin-left: auto;
+        margin: 50px auto;
+
+        border: 10px solid green;
+      }
+    </style>
+  </head>
+  <body>
+    <div>box model</div>
+    <div style="margin-top: 100px">box model</div>
+  </body>
+</html>
+```
+
+margin 속성
+- 기본 값: 0
+- 속성 값: length, percent, auto
+- 속성
+  - margin-top border 영역의 위쪽 여백을 지정합니다.
+  - margin-right border 영역의 오른쪽 여백을 지정합니다.
+  - margin-bottom border 영역의 아래쪽 여백을 지정합니다.
+  - margin-left border 영역의 왼쪽 여백을 지정합니다.
+
+margin 축약
+- `margin: [-top] [-right] [-bottom] [-left];`
+
+margin collapse(마진 병합)
+- 마진 병합은 인접한 두 개 이상의 수직 방향 박스의 마진이 하나로 합쳐지는 것을 의미합니다.
+- 마진 병합이 다음 세가지의 경우에 일어납니다.
+  1. 두 요소가 상하로 인접한 경우: 위 요소의 하단 마진과 아래 요소의 상단 마진의 병합이 일어납니다.
+  2. 부모 요소와 첫 번째 자식 요소 또는 마지막 자식 요소
+      - 부모 요소의 상단 마진과 첫 번째 자식 요소의 상단 마진 병합이 일어납니다.
+      - 부모 요소의 하단 마진과 마지막 자식 요소의 하단 마진 병합이 일어납니다.
+  3. 내용이 없는 빈 요소의 경우: 해당 요소의 상단 마진과 하단 마진의 병합이 일어납니다.
+- 마진 병합은 수직 방향으로만 이루어지며, 좌우에 대해서는 일어나지 않습니다. 
+- 마진 병합은 마진이 반드시 맞닿아야 발생하기 때문에 2,3번째의 경우 패딩 및 보더가 없어야 합니다.
+
+추가적으로
+- 다음과 같은 방식으로 중앙 정렬을 함
+  - `margin: 0 auto;`
+
+### 속성-margin & padding
+padding과 margin 두 속성 모두 여백이 필요로 할 때 적용하는 속성이기 때문에, border의 경계가 명확하게 표시되지 않으면 어떤 속성으로 필요한 여백을 표현할지 헤갈릴 수도 있다.
+
+|  | + | - | auto | 단위 |
+|---|---|---|---|----|
+|margin| O | O | O | px, %|
+|pading| O | X | X | px, %|
+
+
+![margin-padding](./images/margin_padding_example.png);
+
+사람을 기준으로 박스 모델을 설명 하자면?
+- content: 사람의 뼈
+- border: 사람의 피부
+- padding: 사람의 뼈와 피부 사이의 지방
+- marginL 사람과 사람 사이 간격
+
+% 값의 사용과 기준점
+- css 속성을 사용하면서 어떤 값을 적용할 때 이 단위를 적용 할 수 있을까? 라는 생각을 가지고 코딩하는 자세는 매우 중요합니다. margin과 padding은 px과 같은 고정적인 단위 외에도 %라는 상대적인 단위를 사용 할 수 있습니다. %는 요소의 크기를 기준으로 상대적인 값을 결정짓게 됩니다. 얼핏 생각하면, 상하는 height 값에 대해 좌우는 width 값에 대해 크기가 계산될 거 같지만 그렇지 않습니다. %는 상하좌우의 방향에 관계없이 모두 요소의 width 값을 기준으로 값이 결정 됩니다.
+
+
+### 속성-width
+width 속성은 요소의 가로 크기를 정의하는 데 사용하는 속성
+
+정확히는 content 영역의 너비를 지정하는 것을 의미
+
+크기를 지정한다는 것은 같지만, 요소의 종류나 특징에 따라서 다르게 동작하기도 함
+
+
+width
+- 요소의 가로 크기를 지정하는 width 속성은 인라인 레벨 요소를 제외한 모든 요소에 적용
+- width는 content 영역의 너비를 제어할 때 사용하는 데 이때 auto가 아닌 특정한 값을 지정하여 사용하면 그 크기는 box model 영역에서 margin 영역을 제외한 모든 영역에 대해 영향을 받습니다. (content, padding, border) 
+- 기본 값: 0
+- 속성 값: auto, length, percent
+
+
+```
+.box {
+  width: 100px;
+  padding: 20px;
+  border: 10px solid black;
+}
+
+<div class="box">box</div>
+```
+- div 요소의 총 가로 크기는 160px
+  - width: 100
+  - padding: 20 * 2 = 40
+  - border: 10 * 2 = 20
+
+
+```
+.parent {
+  width: 300px;
+  border: 20px solid red;
+}
+.child {
+  width: 50%;
+  padding: 20px;
+  border: 10px solid black;
+}
+
+<div class="parent">
+  <div class="child">
+    child
+  </div>
+</div>
+```
+- child div 요소의 총 가로 크기는 210px
+  - width: 300 % 50% = 150
+  - padding: 20 * 2 = 40
+  - border: 10 * 2 = 20
+
+추가적으로
+- width는 기본적으로 content 영역의 너비를 지정합니다. box-sizing이라는 속성을 이용하여 padding, border 영역을 기준으로 크기를 가질 수 있도록 변경할 수 있습니다. 심화 과정에서 다룰 속성이지만, 미리 살펴보는 것도 좋을 것 같습니다.
+- 부모가 인라인 레벨 요소일 때, 자식(블록 요소)이 width 값에 %를 가지면, 가장 가까운 블록 레벨인 조상의 width를 기준으로 계산됩니다. 만일 최상단까지 블록 레벨 요소가 없으면 body를 기준으로 계산됩니다. https://codepen.io/sunah/pen/LBaWqb
+
+### 속성-height
+height는 요소의 세로 크기를 정의하는 데 사용하는 속성
+
+width와 마찬가지로 정확히는 content 영역의 높이를 지정하는 것
+
+기본적인 동작은 width의 동작 방식과 같게 동작하지만, % 값을 가졌을 때의 동작 방식이 조금 다름
+
+https://developer.mozilla.org/en-US/docs/Web/CSS/height
+
+height
+- 기본 값: 0
+- 속성 값: auto, length, percent
+- height는 content 영역의 높이를 제어할 때 사용하는데 이때 auto가 아닌 특정한 값을 지정하여 사용하면, width 속성과 마찬가지로 box model 영역에서 margin 영역을 제외한 모든 영역에 대해 영향을 받는다.
+
+```
+.box {
+  width: 100px;
+  height: 100px;
+  padding: 10px;
+  border: 15px solid black;
+}
+
+<div class="box">box</div>
+```
+- div 요소의 총 세로 크기는 150px
+  - height: 100
+  - padding: 10 * 2 = 20
+  - border: 15 * 2 = 30
+
+
+```
+.parent {
+  width: 200px;
+  border: 10px solid black;
+}
+.child {
+  height: 50%;
+  background: red;
+}
+
+<div class="parent">
+  <div class="child">
+    child
+  </div>
+</div>
+```
+- child div 요소의 총 세로 크기는 200px
+  - https://developer.mozilla.org/en-US/docs/Web/CSS/height#values
+  - "Containing Block의 높이에 대한 백분율로 높이를 정의
+  -  Containing Block은 부모를 의미한다고 생각
+  - 즉, 현재 위의 코드에서는 부모가 명시적인 높이 값을 가지고 있지 않기 때문에 자식의 높이를 %값으로 지정해줘도 적용되지 않았던 것
+
+추가적으로
+- height 또한 box-sizing 속성을 이용하여 기준값을 padding 영역, border 영역으로 바꿀 수 있습니다.
