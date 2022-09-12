@@ -129,7 +129,7 @@ id 선택자
 
 
 class와 id의 차이점
-- .기호가 아닌 #기호 사용
+- `.` 기호가 아닌 `#` 기호 사용
 - 태그의 class 속성이 아닌 id 속성을 참조
 - 문서 내에 유일한 요소에 사용
 - 구체성 
@@ -230,8 +230,8 @@ p.bar { ... }
 
 자식 선택자
 - `div > span { color:red; }`
-- 자식 선택자는 선택자 사이에 닫는 꺽쇠 기호(>)를 넣는다.
-- 꺽쇠 기호와 선택자 기호 사이에는 공백은 있거나 없어도 상과 넝ㅄ다.
+- 자식 선택자는 선택자 사이에 닫는 `꺽쇠 기호(>)`를 넣는다.
+- 꺽쇠 기호와 선택자 기호 사이에는 공백은 있거나 없어도 상관 없다.
 
 인접 형제 선택자
 - `div + p { color:red; }`
@@ -304,7 +304,7 @@ p.bar { ... }
 ## 구체성(명시도)
 선택자에는 어떤 규칙이 우선 적용되어야 하는지에 대해 정해진 규칙이 있다.
 
-이 규칙을 구체성이라고 한다.
+이 규칙을 `구체성`이라고 한다.
 
 구체성은 선택자를 얼마나 명시적으로(구체적으로) 선언했느냐를 수치화한 것
 
@@ -412,7 +412,7 @@ https://developer.mozilla.org/ko/
 ### 속성-단위
 https://developer.mozilla.org/en-US/docs/Learn/CSS/Building_blocks/Values_and_units
 
-단위의 크기는 절대 길이 단위와 상대 길이 단위로 구분되어 진다.
+단위의 크기는 `절대 길이` 단위와 `상대 길이` 단위로 구분되어 진다.
 
 - 절대 길이
   - `px (1px = 1/96th of 1 inch)`
@@ -467,7 +467,7 @@ https://developer.mozilla.org/en-US/docs/Learn/CSS/Building_blocks/Values_and_un
 색상 값 지정 방식
 - 컬러 키워드
   - CSS 자체에서 사용 가능한 문자 식별자
-  - red, blue, black 등과 같이 미리 정의되어 있는 키워드를 이용해 색상 표현
+  - `red`, `blue`, `black` 등과 같이 미리 정의되어 있는 키워드를 이용해 색상 표현
 - 16 진법
   - 각 자리의 알파벳은 대소문자를 구분하지 않음
   - `#RRGGBB`
@@ -487,7 +487,7 @@ https://developer.mozilla.org/en-US/docs/Learn/CSS/Building_blocks/Values_and_un
     - 0 ~ 255의 정수로 된 값으로 지정
     - 0 -> 255는 검정에서 흰색으로 값의 변화를 나타냄
     - A의 값은 0 ~ 1 사이의 값을 지정할 수 있으며, 0.5와 같이 소수점으로 표기
-    - 0 -> 은 투명에서 불투명으로 값의 변화를 나타냄
+    - 0 -> 1 은 투명에서 불투명으로 값의 변화를 나타냄
 
 <br>
 
@@ -617,7 +617,7 @@ boxmodel 구성
 
 <br>
 
-### border
+### 속성-border
 border 속성은 요소의 테두리에 관련된 속성을 지정할 때 사용
 
 테두리의 굵기, 모양, 색상을 지정할 수 있는 속성들이 있음
@@ -710,7 +710,7 @@ padding 영역은 border와 content 사이의 여백
 </html>
 ```
 padding
-- 기본값은 0이다.
+- 기본 값: 0
 - 속성
   - padding-top
     - content 영역의 위쪽 여백을 지정합니다.
@@ -762,16 +762,16 @@ margin 속성
 - 기본 값: 0
 - 속성 값: length, percent, auto
 - 속성
-  - margin-top border 영역의 위쪽 여백을 지정합니다.
-  - margin-right border 영역의 오른쪽 여백을 지정합니다.
-  - margin-bottom border 영역의 아래쪽 여백을 지정합니다.
-  - margin-left border 영역의 왼쪽 여백을 지정합니다.
+  - margin-top border 영역의 위쪽 여백을 지정
+  - margin-right border 영역의 오른쪽 여백을 지정
+  - margin-bottom border 영역의 아래쪽 여백을 지정
+  - margin-left border 영역의 왼쪽 여백을 지정
 
 margin 축약
 - `margin: [-top] [-right] [-bottom] [-left];`
 
 margin collapse(마진 병합)
-- 마진 병합은 인접한 두 개 이상의 수직 방향 박스의 마진이 하나로 합쳐지는 것을 의미합니다.
+- 마진 병합은 인접한 두 개 이상의 수직 방향 박스의 마진이 하나로 합쳐지는 것을 의미
 - 마진 병합이 다음 세가지의 경우에 일어납니다.
   1. 두 요소가 상하로 인접한 경우: 위 요소의 하단 마진과 아래 요소의 상단 마진의 병합이 일어납니다.
   2. 부모 요소와 첫 번째 자식 요소 또는 마지막 자식 요소
@@ -786,13 +786,14 @@ margin collapse(마진 병합)
   - `margin: 0 auto;`
 
 ### 속성-margin & padding
-padding과 margin 두 속성 모두 여백이 필요로 할 때 적용하는 속성이기 때문에, border의 경계가 명확하게 표시되지 않으면 어떤 속성으로 필요한 여백을 표현할지 헤갈릴 수도 있다.
+padding과 margin 두 속성 모두 여백이 필요로 할 때 적용하는 속성이기 때문에, border의 경계가 명확하게 표시되지 않으면 어떤 속성으로 필요한 여백을 표현할지 헷갈릴 수도 있다.
 
 |  | + | - | auto | 단위 |
 |---|---|---|---|----|
 |margin| O | O | O | px, %|
 |pading| O | X | X | px, %|
 
+<br>
 
 ![margin-padding](./images/margin_padding_example.png);
 
@@ -800,7 +801,7 @@ padding과 margin 두 속성 모두 여백이 필요로 할 때 적용하는 속
 - content: 사람의 뼈
 - border: 사람의 피부
 - padding: 사람의 뼈와 피부 사이의 지방
-- marginL 사람과 사람 사이 간격
+- margin: 사람과 사람 사이 간격
 
 % 값의 사용과 기준점
 - css 속성을 사용하면서 어떤 값을 적용할 때 이 단위를 적용 할 수 있을까? 라는 생각을 가지고 코딩하는 자세는 매우 중요합니다. margin과 padding은 px과 같은 고정적인 단위 외에도 %라는 상대적인 단위를 사용 할 수 있습니다. %는 요소의 크기를 기준으로 상대적인 값을 결정짓게 됩니다. 얼핏 생각하면, 상하는 height 값에 대해 좌우는 width 값에 대해 크기가 계산될 거 같지만 그렇지 않습니다. %는 상하좌우의 방향에 관계없이 모두 요소의 width 값을 기준으로 값이 결정 됩니다.
@@ -819,7 +820,6 @@ width
 - width는 content 영역의 너비를 제어할 때 사용하는 데 이때 auto가 아닌 특정한 값을 지정하여 사용하면 그 크기는 box model 영역에서 margin 영역을 제외한 모든 영역에 대해 영향을 받습니다. (content, padding, border) 
 - 기본 값: 0
 - 속성 값: auto, length, percent
-
 
 ```
 .box {
@@ -859,8 +859,11 @@ width
   - border: 10 * 2 = 20
 
 추가적으로
-- width는 기본적으로 content 영역의 너비를 지정합니다. box-sizing이라는 속성을 이용하여 padding, border 영역을 기준으로 크기를 가질 수 있도록 변경할 수 있습니다. 심화 과정에서 다룰 속성이지만, 미리 살펴보는 것도 좋을 것 같습니다.
-- 부모가 인라인 레벨 요소일 때, 자식(블록 요소)이 width 값에 %를 가지면, 가장 가까운 블록 레벨인 조상의 width를 기준으로 계산됩니다. 만일 최상단까지 블록 레벨 요소가 없으면 body를 기준으로 계산됩니다. https://codepen.io/sunah/pen/LBaWqb
+- width는 기본적으로 content 영역의 너비를 지정합니다.
+- box-sizing이라는 속성을 이용하여 padding, border 영역을 기준으로 크기를 가질 수 있도록 변경할 수 있습니다.
+- 부모가 인라인 레벨 요소일 때, 자식(블록 요소)이 width 값에 %를 가지면, 가장 가까운 블록 레벨인 조상의 width를 기준으로 계산됩니다. 
+- 만일 최상단까지 블록 레벨 요소가 없으면 body를 기준으로 계산됩니다. 
+- https://codepen.io/sunah/pen/LBaWqb
 
 ### 속성-height
 height는 요소의 세로 크기를 정의하는 데 사용하는 속성
@@ -915,4 +918,4 @@ height
   - 즉, 현재 위의 코드에서는 부모가 명시적인 높이 값을 가지고 있지 않기 때문에 자식의 높이를 %값으로 지정해줘도 적용되지 않았던 것
 
 추가적으로
-- height 또한 box-sizing 속성을 이용하여 기준값을 padding 영역, border 영역으로 바꿀 수 있습니다.
+- height 또한 box-sizing 속성을 이용하여 기준값을 padding 영역, border 영역으로 바꿀 수 있다.
