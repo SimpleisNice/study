@@ -572,7 +572,7 @@ background-attachment
 
 https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Box_Model/Introduction_to_the_CSS_box_model
 
-![box model](./images/box_model.png)
+![box model](../images/box_model.png)
 
 문서를 배치할 때 브라우저의 렌더링 엔진은 표준 CSS 기본 박스 모델에 따라 각 요소를 사각형 상자로 나타냄
 
@@ -795,7 +795,7 @@ padding과 margin 두 속성 모두 여백이 필요로 할 때 적용하는 속
 
 <br>
 
-![margin-padding](./images/margin_padding_example.png);
+![margin-padding](../images/margin_padding_example.png);
 
 사람을 기준으로 박스 모델을 설명 하자면?
 - content: 사람의 뼈
@@ -919,3 +919,8 @@ height
 
 추가적으로
 - height 또한 box-sizing 속성을 이용하여 기준값을 padding 영역, border 영역으로 바꿀 수 있다.
+
+
+# LAYOUT
+
+## 속성 - display
