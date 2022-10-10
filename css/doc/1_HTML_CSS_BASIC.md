@@ -920,7 +920,145 @@ height
 추가적으로
 - height 또한 box-sizing 속성을 이용하여 기준값을 padding 영역, border 영역으로 바꿀 수 있다.
 
+<br><br>
+
 
 # LAYOUT
 
 ## 속성 - display
+```html
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <style>
+      .inline {
+        /* width: 100px;  inline은 미적용됨*/
+        /* height: 100px; inline은 미적용됨*/
+        margin: 10px; /* 실무에서는 좌우에만 값을 줌*/
+        padding: 10px; /* 실무에서는 좌우에만 값을 줌*/
+        border: 10px solid red;
+        background: pink;
+      }
+      .block {
+        width: 100px;
+        height: 100px;
+        margin: 10px;
+        padding: 10px;
+        border: 10px solid red;
+        background: pink;
+      }
+      .inlineblock {
+        width: 100px;
+        height: 100px;
+        margin: 10px;
+        padding: 10px;
+        border: 10px solid red;
+        background: pink;
+      }
+    </style>
+  </head>
+  <body>
+    <div>
+      <div style="display: inline" class="inline">box1</div>
+    </div>
+    <div>
+      <div style="display: block" class="block">box1</div>
+    </div>
+    <div>
+      <div style="display: inline-block" class="inlineblock">box1</div>
+    </div>
+  </body>
+</html>
+```
+
+display 속성
+- 요소의 렌더링 박스 유형을 결정하는 속성
+- 기본 값은 요소마다 다르다.
+- 속성값
+  - none
+    - 요소가 렌더링 되지 않음
+  - inline
+    - inline level 요소처럼 렌더링
+  - block
+    - block level 요소처럼 렌더링
+  - inline-block
+    - inline level 요소처럼 렌더링(배치)되지만 block level의 성질을 가짐
+    - height 나 width 등과 같은 박스모델 속성을 적용할 수 있다
+    - inline와 inline-block의 경우 태그 사이의 공백이나 개행이 있을 경우 약 4px의 여백을 가지게 됩
+  - ...
+
+|display|width|height|margin|padding|border|
+|---|---|---|---|---|---|
+|block|O|O|O|O|O|
+|inline|X|X|좌/우|O|O|
+|inline-block|O|O|O|O|O|
+
+추가 사항
+- inline 요소의 padding/border 속성이 좌/우 만 적용 된다고 표시한 이유
+  - 실제로 inline 요소의 padding/border는 좌/우뿐만 아니라 상/하에도 적용
+  - 하지만 상/하 padding/border는 line-box에는 영향을 주지 못하기 때문에 위와 같이 부모 요소의 박스에 반영되지 않습니다
+  - 또한 인접한 다른 line-box 에도 반영되지않습니다. 즉 콘텐츠가 겹칠 수 있기 때문에 실무에서는 잘 사용하지 않습니다.
+
+<br>
+
+## 속석 - visiblity
+visiblity 속성
+- 요소의 화면 표시 여부를 지정하는 속성
+- 기본 값: visible
+- `visiblity: visible|hidden|collapse|initial|inherit`
+
+<br>
+
+## 속성 - float
+```html
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <style>
+      .container {
+        border: 1px dashed #aaa;
+        padding: 15px;
+        clear: both;
+      }
+      .container div, .container span {
+        width: 100px;
+        height: 100px;
+        border: 1px solid #aaa;
+        color: #fff;
+      }
+      .container :nth-child(1) {
+        background-color: green;
+      }
+      .container :nth-child(2) {
+        background-color: skyblue;
+      }
+    </style>
+  </head>
+  <body>
+    <h2>요소를 보통의 흐름에서 벗어나 띄워지게 함</h2>
+
+    <div class="container" style="width:400px;">
+      <div style="float:left;">Box1</div>
+      <div style="float:left;">Box2</div>
+    </div>
+  
+    <h2 style="margin-top:100px;">주변 텍스트나 인라인요소가 주위를 감싸는 특징이 있음.</h2>
+    <div class="container" style="width:400px;">
+      <div style="float:left;">Box1</div>
+      <div style="float:right;">Box2</div>
+      <p>CSS 속성(property) float 은 한 요소(element)가 보통 흐름(normal flow)으로부터 빠져 텍스트 및 인라인(inline) 요소가 그 주위를 감싸는 자기 컨테이너의 좌우측을 따라 배치되어야 함을 지정합니다. 부동(floating) 요소 는 float 의 계산값(computed value)이 none이 아닌 요소입니다.</p>
+    </div>
+  
+    <h2>대부분의 요소에 display 값을 block으로 변경함.</h2>
+    <div class="container" style="width:400px;">
+      <span style="float:left;">inline1</span>
+      <span>inline2</span>
+    </div>
+  </body>
+</html>
+```
+
+float 속성
+- 요소를 float(요소를 보통의 흐름에서 벗어나게 함) 시킬지 지정하는 속성
+- 기본 값: none
+- `float: none | left | right | initial | inherit;`
