@@ -1,3 +1,7 @@
+import Head from 'next/head';
+import Layout from '../../components/Layout';
 export default function FirstPost() {
-  return <h1>first post</h1>
+  return <Layout>
+    <h1>first post</h1>
+  </Layout> 
 }
