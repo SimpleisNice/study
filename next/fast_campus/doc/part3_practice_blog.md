@@ -74,7 +74,7 @@ SSG(build time), SSR(request time)
 Next.js를 활용하면 페이지별로 Pre-rendering 방식을 선택할 수 있다.
 - getStaticProps를 사용하면 SSG
 - getServerSideProps를 사용하면 SSR
-  - 참고 사항으로 fs는 server side에서만 가능
+  - 참고 사항으로 fs는 server side에서만 가능`
 
 ### SSG
 SSG를 사용하면 좋은 페이지

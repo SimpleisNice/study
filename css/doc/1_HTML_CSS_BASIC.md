@@ -1062,3 +1062,5 @@ float 속성
 - 요소를 float(요소를 보통의 흐름에서 벗어나게 함) 시킬지 지정하는 속성
 - 기본 값: none
 - `float: none | left | right | initial | inherit;`
+- 대부분 요소를 display 값을 block으로 변경함
+  - display 값 변경 예외: inline-table, flex 등
