@@ -431,7 +431,7 @@ export default MyDocument;
 ```
 
 - Html:
-  - Next.js 애플리케이션의 `<html>` 태그에 해당함
+  - Next.js 애플리케이션의 `<html>` 태그에 해당 함
   - lang 과 같은 표준 HTML 속성들을 전달할 수 있음
 - Head:
   - 애플리케이션의 모든 페이지에 대한 공통 태그를 정의할 때 이 컴포넌트를 사용
@@ -443,3 +443,76 @@ export default MyDocument;
 - NextScript:
   - Next.js는 클라이언트에서 전송할 페이지를 렌더링하고, 클라이언트에서 실행할 코드나 리액트 하이드레이션과 같은 작업을 처리할 수 있는 커스텀 스크립트를 끼워 넣음.
   - 해당 컴포넌트는 이러한 커스텀 자바스크립트가 위치하는 곳
+
+# CHAPTER_04 코드 구성과 데이터 불러오기
+
+애플리케이션의 디렉터리 구조를 어떠헥 구성하는지 알아본다.
+
+디렉터리 구성은 Next.js 가 애플리케이션 상태를 관리할 때 데이터 흐름을 잘 유지할 수 있는지를 결정하는 중요한 요인
+
+또한 클라이언트와 서버에서 외부 REST API 및 GraphQL API 를 사용하는 방법도 배움
+
+### 디렉터리 구조
+
+애플리케이션의 코드를 쉽게 유지 보수하고 확장하려면 프로젝트의 디렉터리 구조를 간결하고 분명하게 구성하고 유지하는 것이 중요함
+
+- 컴포넌트
+- 유틸리티
+- 정적 자원 구성
+- 스타일 구성
+- lib 파일 구성
+  - 서드파티(third-party) 라이브러리를 감싸는 스크립트를 지칭하는 말
+  - 유틸리티 스크립트는 범용이기 때문에 컴포넌트나 라이브러리에서 가져다 쓸 수 있지만 lib 파일은 특정 라이브러리에 특화된것
+
+### 데이터 불러오기
+
+서버는 두 가지 상황에서 데이터를 불러올 수 있다.
+
+- 정적 페이지를 만들 때 `getStaticProps` 함수를 사용하여 빌드 시점에 데이터를 불러올 수 있음
+- 서버가 페이지를 렌더링할 때 `getServerSideProps` 를 통해 실행 도중 데이터를 불러올 수도 있음
+
+### 서버가 데이터 불러오기
+
+Next.js 에서는 서버가 내장 `getStaticProps` 와 `getServerSideProps` 함수를 사용해서 데이터를 불러올 수 있음
+
+Node.js는 웹 브라우저와 달리 자바스크립트 fetch API를 제공하지 않기 때문에 서버에서는 두가지 방법으로 HTTP 요청을 만들고 처리할 수 있다.
+
+1. Node.js의 내장 HTTP 라이브러리를 사용할 수 있음
+
+   - 별도의 의존성 라이브러리를 설치할 필요 없이 바로 불러와서 쓸 수 있다.
+   - 간단하며 잘 만들어진 라이브러리지만 서드파티 HTPP 클라이언트와 비교해보았을 때 설정하고 처리해야 할 작업이 더 많은 편
+
+2. HTTP 클라이언트 라이브러리를 사용할 수 있음.
+   - fetch API 를 Node.js 에서 사용할 수 있도록 만든 isomorphic-unfetch, Undici, Axios
+
+### 서버에서 REST API 사용하기
+
+REST API를 호출할 때는 퍼블릭 API를 호출할 것인지 아니면 프라이빗 API 를 호출할 것인지 먼저 알아야한다.
+
+- 퍼블릭은 어떤 인증이나 권한도 필요 없으며 누구나 호출할 수 있다.
+- 프라이빗은 호출 전 반드시 인증과 권한 검사 과정을 거쳐야 한다.
+
+```js
+export async function getServerSideProps(ctx) {
+  const { username } = ctx.query;
+  const userReq = await axios.get(
+    `https://jsonplaceholder.typicode.com/users/${username}`
+  );
+  // 이렇게 설정을 하면 별다른 설정 없이도 Next.js가 알아서 404 페이지 표시
+  if (userReq.status === 404) {
+    return {
+      notFound: true,
+    };
+  }
+
+  return {
+    props: {
+      user: userReq.data,
+    },
+  };
+}
+```
+
+### 클라이언트가 데이터 불러오기
+
+# CSS 와 내장 스타일링 메서드
