@@ -3,21 +3,26 @@ import Link from "next/link";
 
 export async function getServerSideProps(ctx) {
   const { username } = ctx.query;
-  const userReq = await axios.get(
-    `https://jsonplaceholder.typicode.com/users/${username}`
-  );
-
-  if (userReq.status === 404) {
+  try {
+    const userReq = await axios.get(
+      `https://jsonplaceholder.typicode.com/users/${username}`
+    );
+    if (userReq.status === 404) {
+      return {
+        notFound: true,
+      };
+    }
+  } catch {
+  } finally {
     return {
-      notFound: true,
+      props: {
+        user: userReq?.data || {
+          email: "sample",
+          username: "sample",
+        },
+      },
     };
   }
-
-  return {
-    props: {
-      user: userReq.data,
-    },
-  };
 }
 
 function UserPage({ user }) {
